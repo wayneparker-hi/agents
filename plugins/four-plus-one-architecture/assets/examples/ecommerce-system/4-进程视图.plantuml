@@ -1,0 +1,81 @@
+@startuml ecommerce-process-view
+title 电商系统进程视图 - 关键场景
+
+== 场景1: 下单流程 ==
+
+participant 消费者 as customer
+participant API网关 as gateway
+participant 购物车服务 as cart_svc
+participant 订单服务 as order_svc
+participant 库存服务 as inventory_svc
+participant 支付服务 as payment_svc
+participant 消息队列 as mq
+participant 数据库 as db
+
+customer -> gateway: 提交订单请求
+gateway -> cart_svc: 获取购物车
+cart_svc -> db: 查询购物车项
+db --> cart_svc: 返回购物车
+cart_svc --> gateway: 返回购物车数据
+
+gateway -> order_svc: 创建订单
+order_svc -> inventory_svc: 检查库存
+inventory_svc -> db: 查询库存
+db --> inventory_svc: 返回库存信息
+
+par 并行处理
+    inventory_svc -> db: 扣减库存
+    order_svc -> db: 保存订单记录
+end
+
+order_svc -> mq: 发布订单创建事件
+mq --> order_svc: 事件已发布
+
+order_svc --> gateway: 订单创建成功
+gateway --> customer: 返回订单ID
+
+== 场景2: 支付流程 ==
+
+customer -> gateway: 支付请求
+gateway -> payment_svc: 创建支付单
+payment_svc -> db: 保存支付记录
+db --> payment_svc: 支付记录已保存
+
+payment_svc -> gateway: 返回支付链接
+gateway --> customer: 跳转支付页面
+
+customer -> payment_svc: 支付网关回调
+payment_svc -> order_svc: 更新订单为已支付
+order_svc -> db: 更新订单状态
+order_svc -> mq: 发布支付成功事件
+mq --> payment_svc: 事件已发布
+
+payment_svc --> gateway: 回调确认
+gateway --> customer: 支付成功
+
+== 场景3: 发货和配送跟踪 ==
+
+participant 商家 as merchant
+participant 发货服务 as ship_svc
+participant 物流API as logistics_api
+
+merchant -> gateway: 获取待发货订单
+gateway -> order_svc: 查询订单
+order_svc -> db: 查询待发货订单
+db --> order_svc: 返回订单列表
+
+merchant -> gateway: 确认发货
+gateway -> ship_svc: 创建发货记录
+ship_svc -> logistics_api: 调用物流API获取面单
+logistics_api --> ship_svc: 返回物流单号
+ship_svc -> db: 保存发货信息
+ship_svc -> mq: 发布发货事件
+mq --> customer: 通知消费者
+
+customer -> gateway: 查询物流信息
+gateway -> ship_svc: 获取物流信息
+ship_svc -> logistics_api: 查询跟踪信息
+logistics_api --> ship_svc: 返回跟踪数据
+ship_svc --> customer: 显示物流进度
+
+@enduml

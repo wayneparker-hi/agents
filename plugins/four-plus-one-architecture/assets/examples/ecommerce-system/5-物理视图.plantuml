@@ -1,0 +1,118 @@
+@startuml ecommerce-physical-view
+!include <C4/C4_Deployment>
+
+title 电商系统物理视图 - 部署架构
+
+Deployment_Node(internet, "互联网", "") {
+    Deployment_Node(cdn, "CDN", "Aliyun CDN") {
+        Deployment_Node(cdn_node, "CDN节点", "静态资源\n图片/CSS/JS") {
+        }
+    }
+}
+
+Deployment_Node(alicloud, "阿里云", "") {
+    Deployment_Node(dmz, "DMZ区", "互联网边界") {
+        Deployment_Node(slb, "负载均衡", "SLB\n3个实例") {
+            Deployment_Node(slb_1, "SLB-1", "主活")
+            Deployment_Node(slb_2, "SLB-2", "主活")
+            Deployment_Node(slb_3, "SLB-3", "备份")
+        }
+    }
+
+    Deployment_Node(app_zone, "应用区", "业务应用") {
+        Deployment_Node(ecs_group1, "API服务组", "5个ECS实例\n4GB内存") {
+            Deployment_Node(ecs1, "API-1", "业务应用")
+            Deployment_Node(ecs2, "API-2", "业务应用")
+            Deployment_Node(ecs3, "API-3", "业务应用")
+            Deployment_Node(ecs4, "API-4", "业务应用")
+            Deployment_Node(ecs5, "API-5", "业务应用")
+        }
+
+        Deployment_Node(cache_group, "缓存集群", "Redis\n3个实例") {
+            Deployment_Node(redis1, "Redis-1", "主")
+            Deployment_Node(redis2, "Redis-2", "从")
+            Deployment_Node(redis3, "Redis-3", "从")
+        }
+
+        Deployment_Node(mq_group, "消息队列", "RabbitMQ\n3个节点") {
+            Deployment_Node(mq1, "MQ-1", "节点")
+            Deployment_Node(mq2, "MQ-2", "节点")
+            Deployment_Node(mq3, "MQ-3", "节点")
+        }
+    }
+
+    Deployment_Node(data_zone, "数据区", "数据存储") {
+        Deployment_Node(db_group, "数据库集群", "MySQL\n主从+读写分离") {
+            Deployment_Node(mysql_master, "MySQL-Master", "主库\n16GB内存\n500GB存储")
+            Deployment_Node(mysql_slave1, "MySQL-Slave-1", "从库\n读用")
+            Deployment_Node(mysql_slave2, "MySQL-Slave-2", "从库\n读用")
+        }
+
+        Deployment_Node(search_group, "搜索引擎", "Elasticsearch\n3个节点") {
+            Deployment_Node(es1, "ES-1", "数据节点")
+            Deployment_Node(es2, "ES-2", "数据节点")
+            Deployment_Node(es3, "ES-3", "协调节点")
+        }
+
+        Deployment_Node(backup_group, "备份存储", "OSS\n跨区域备份") {
+            Deployment_Node(oss_backup, "OSS", "备份数据\n每天备份")
+        }
+    }
+
+    Deployment_Node(mgmt_zone, "管理区", "运维管理") {
+        Deployment_Node(monitor, "监控系统", "Prometheus\nGrafana\nAlertmanager")
+        Deployment_Node(log, "日志系统", "ELK Stack\n日志聚合")
+        Deployment_Node(ci, "CI/CD", "GitLab CI\n自动部署")
+    }
+}
+
+Deployment_Node(external, "外部系统", "") {
+    Deployment_Node(payment_gw, "支付网关", "支付宝\n微信支付")
+    Deployment_Node(logistics, "物流系统", "圆通\n顺丰\nEMS")
+    Deployment_Node(sms, "短信服务", "阿里云SMS\n消息通知")
+}
+
+Rel(internet, slb, "HTTP/HTTPS\n443")
+Rel(slb, ecs_group1, "内网通信\n8080")
+Rel(ecs_group1, cache_group, "缓存访问\n6379")
+Rel(ecs_group1, mq_group, "消息队列\n5672")
+Rel(ecs_group1, db_group, "数据库访问\n3306")
+Rel(ecs_group1, search_group, "搜索引擎\n9200")
+Rel(db_group, backup_group, "每日备份")
+Rel(ecs_group1, payment_gw, "支付对接\n HTTPS")
+Rel(ecs_group1, logistics, "物流查询\n HTTPS")
+Rel(ecs_group1, sms, "短信发送\n SDK")
+Rel(mgmt_zone, ecs_group1, "监控采集")
+Rel(mgmt_zone, db_group, "日志聚合")
+
+note right of slb
+    高可用架构
+    - 多个LB实例
+    - 自动故障转移
+    - 跨AZ部署
+end note
+
+note right of ecs_group1
+    API服务
+    - 5个实例支持高峰QPS 5000+
+    - 自动扩缩容
+    - 灰度发布
+end note
+
+note right of mysql_master
+    数据库配置
+    - RTO: 5分钟
+    - RPO: 1分钟
+    - 主从同步
+    - 读写分离
+end note
+
+note right of mgmt_zone
+    可观测性
+    - 实时监控
+    - 链路追踪
+    - 日志分析
+    - 告警通知
+end note
+
+@enduml

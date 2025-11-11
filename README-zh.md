@@ -1,3 +1,13 @@
+**中文** | [English](README.md)
+
+## 新增插件
+
+- **[领域驱动设计（DDD）](plugins/domain-driven-design/README.md)** - 战术和战略设计模式、限界上下文、统一语言
+- **[四加一视图架构](plugins/four-plus-one-architecture/README.md)** - 用例视图、逻辑视图、流程视图、物理视图、场景视图
+- **[现代企业架构框架（MEAF）](plugins/modern-enterprise-architecture/README.md)** - 企业架构规划、技术选型、系统演进
+
+---
+
 # Claude Code 插件：编排与自动化
 
 > **⚡ 为Sonnet 4.5和Haiku 4.5更新** — 所有代理已针对最新模型进行优化，支持混合编排

@@ -1,0 +1,79 @@
+@startuml ecommerce-scenario-view
+!include <C4/C4_Context>
+!define PLANTUML_SKIN default
+skinparam backgroundColor #FEFEFE
+skinparam actor {
+    BackgroundColor #FFFFFF
+    BorderColor #333333
+}
+
+title 电商系统场景视图 - 用例图
+
+actor 消费者 as customer
+actor 商家 as merchant
+actor 管理员 as admin
+actor 支付网关 as payment_gw
+actor 物流系统 as logistics
+
+rectangle "电商系统" {
+    usecase "浏览商品" as UC1
+    usecase "搜索商品" as UC2
+    usecase "查看商品详情" as UC3
+    usecase "加入购物车" as UC4
+    usecase "生成订单" as UC5
+    usecase "支付订单" as UC6
+    usecase "确认支付" as UC7
+    usecase "发货" as UC8
+    usecase "查询订单" as UC9
+    usecase "退货退款" as UC10
+
+    usecase "发布商品" as UC11
+    usecase "管理库存" as UC12
+    usecase "查看订单" as UC13
+    usecase "设置运费" as UC14
+
+    usecase "管理商家" as UC15
+    usecase "管理商品" as UC16
+    usecase "审核订单" as UC17
+    usecase "查看数据报表" as UC18
+
+    UC1 .> UC2 : include
+    UC2 .> UC3 : include
+    UC4 .> UC5 : include
+    UC5 .> UC6 : include
+    UC6 --> UC7 : extends
+    UC7 .> UC8 : include
+
+    UC11 .> UC12 : include
+    UC12 .> UC14 : include
+
+    UC9 --> UC10 : extends
+
+    UC13 .> UC9 : include
+
+    UC15 --> UC16 : extends
+    UC16 --> UC17 : extends
+}
+
+customer --> UC1
+customer --> UC3
+customer --> UC4
+customer --> UC5
+customer --> UC6
+customer --> UC9
+customer --> UC10
+
+merchant --> UC11
+merchant --> UC12
+merchant --> UC13
+merchant --> UC14
+
+admin --> UC15
+admin --> UC16
+admin --> UC17
+admin --> UC18
+
+UC7 --> payment_gw : 支付验证
+UC8 --> logistics : 物流对接
+
+@enduml

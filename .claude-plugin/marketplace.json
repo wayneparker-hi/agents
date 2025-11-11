@@ -2019,6 +2019,202 @@
         "./skills/debugging-strategies",
         "./skills/monorepo-management"
       ]
+    },
+    {
+      "name": "domain-driven-design",
+      "source": "./plugins/domain-driven-design",
+      "description": "Complete Domain-Driven Design framework with strategic design (bounded contexts, context mapping, ubiquitous language), tactical patterns (aggregates, entities, value objects), and executable workflows for system architecture and team organization",
+      "version": "1.0.0",
+      "author": {
+        "name": "Claude Code Community",
+        "url": "https://github.com/anthropics/claude-code"
+      },
+      "homepage": "https://github.com/anthropics/claude-code",
+      "repository": "https://github.com/anthropics/claude-code",
+      "license": "MIT",
+      "keywords": [
+        "ddd",
+        "domain-driven-design",
+        "architecture",
+        "bounded-context",
+        "aggregates",
+        "architecture-design",
+        "event-storming",
+        "microservices",
+        "strategic-design",
+        "tactical-design",
+        "领域驱动设计",
+        "限界上下文",
+        "事件驱动",
+        "战略设计",
+        "战术设计"
+      ],
+      "category": "architecture",
+      "strict": false,
+      "commands": [
+        "./commands/bounded-context-mapping.md",
+        "./commands/domain-modeling-workflow.md",
+        "./commands/ddd-refactoring.md"
+      ],
+      "agents": [
+        "./agents/strategic-designer.md",
+        "./agents/domain-modeler.md",
+        "./agents/architecture-advisor.md",
+        "./agents/ubiquitous-language-facilitator.md"
+      ],
+      "skills": [
+        "./skills/bounded-context-design",
+        "./skills/aggregate-design-principles",
+        "./skills/event-storming",
+        "./skills/entity-value-object-patterns",
+        "./skills/context-mapping-patterns",
+        "./skills/domain-events",
+        "./skills/ubiquitous-language",
+        "./skills/layered-architecture"
+      ]
+    },
+    {
+      "name": "modern-enterprise-architecture",
+      "source": "./plugins/modern-enterprise-architecture",
+      "description": "Complete MEAF (Modern Enterprise Architecture Framework) plugin for enterprise architecture design across four layers: business, application, data, and technology architecture with 10+ specialist agents, 15+ knowledge skills, and end-to-end workflows",
+      "version": "1.0.0",
+      "author": {
+        "name": "Claude Code Community",
+        "url": "https://github.com/anthropics/claude-code"
+      },
+      "homepage": "https://github.com/anthropics/claude-code",
+      "repository": "https://github.com/anthropics/claude-code",
+      "license": "MIT",
+      "keywords": [
+        "enterprise-architecture",
+        "meaf",
+        "business-architecture",
+        "application-architecture",
+        "data-architecture",
+        "technology-architecture",
+        "event-storming",
+        "domain-modeling",
+        "capability-modeling",
+        "architecture-design",
+        "microservices",
+        "architecture-patterns",
+        "架构",
+        "架构设计",
+        "架构模式",
+        "企业架构",
+        "业务架构",
+        "应用架构",
+        "数据架构",
+        "技术架构",
+        "领域建模",
+        "能力建模",
+        "业务身份建模"
+      ],
+      "category": "architecture",
+      "strict": false,
+      "commands": [
+        "./commands/business-arch-workflow.md",
+        "./commands/event-storming-workshop.md",
+        "./commands/application-arch-workflow.md",
+        "./commands/data-arch-workflow.md",
+        "./commands/tech-arch-workflow.md",
+        "./commands/meaf-complete-workflow.md",
+        "./commands/meaf-architecture-review.md"
+      ],
+      "agents": [
+        "./agents/business-architect.md",
+        "./agents/domain-expert.md",
+        "./agents/capability-designer.md",
+        "./agents/application-architect.md",
+        "./agents/quality-attribute-analyzer.md",
+        "./agents/integration-designer.md",
+        "./agents/data-architect.md",
+        "./agents/data-modeler.md",
+        "./agents/technology-architect.md",
+        "./agents/adr-facilitator.md",
+        "./agents/meaf-master-architect.md"
+      ],
+      "skills": [
+        "./skills/event-storming",
+        "./skills/domain-modeling",
+        "./skills/process-modeling",
+        "./skills/capability-modeling",
+        "./skills/subdomain-classification",
+        "./skills/application-boundary-design",
+        "./skills/quality-attributes-conflicts",
+        "./skills/application-grouping",
+        "./skills/integration-patterns",
+        "./skills/data-layering",
+        "./skills/data-modeling",
+        "./skills/data-consistency",
+        "./skills/technology-selection",
+        "./skills/deployment-architecture",
+        "./skills/architecture-decision-records"
+      ]
+    },
+    {
+      "name": "four-plus-one-architecture",
+      "source": "./plugins/four-plus-one-architecture",
+      "description": "Complete 4+1 Architecture View plugin for systems architecture design with 6 specialized agents (Scenario, Logical, Development, Process, Physical views + Master Coordinator), 8 knowledge skills, and 4 end-to-end workflows (Complete design, Logical-Development quick, Process-Physical quick, Architecture Review)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Claude Code Community",
+        "url": "https://github.com/anthropics/claude-code"
+      },
+      "homepage": "https://github.com/anthropics/claude-code",
+      "repository": "https://github.com/anthropics/claude-code",
+      "license": "MIT",
+      "keywords": [
+        "4plus1-architecture",
+        "4+1-views",
+        "architecture-design",
+        "scenario-view",
+        "logical-view",
+        "development-view",
+        "process-view",
+        "physical-view",
+        "use-case-design",
+        "class-design",
+        "module-design",
+        "sequence-design",
+        "deployment-design",
+        "plantuml",
+        "uml",
+        "architecture-documentation",
+        "架构设计",
+        "4+1视图",
+        "场景视图",
+        "逻辑视图",
+        "开发视图",
+        "进程视图",
+        "物理视图"
+      ],
+      "category": "architecture",
+      "strict": false,
+      "commands": [
+        "./commands/41view-complete-workflow.md",
+        "./commands/logical-development-workflow.md",
+        "./commands/process-physical-workflow.md",
+        "./commands/architecture-review.md"
+      ],
+      "agents": [
+        "./agents/scenario-view-architect.md",
+        "./agents/logical-view-architect.md",
+        "./agents/development-view-architect.md",
+        "./agents/process-view-architect.md",
+        "./agents/physical-view-architect.md",
+        "./agents/41view-master-architect.md"
+      ],
+      "skills": [
+        "./skills/scenario-view-design",
+        "./skills/logical-view-design",
+        "./skills/development-view-design",
+        "./skills/process-view-design",
+        "./skills/physical-view-design",
+        "./skills/plantuml-best-practices",
+        "./skills/41view-integration",
+        "./skills/architecture-documentation"
+      ]
     }
   ]
 }

@@ -1,0 +1,287 @@
+@startuml ecommerce-logical-view
+!include <C4/C4_Container>
+
+title 电商系统逻辑视图 - 类设计
+
+package Domain {
+    enum UserRole {
+        CUSTOMER
+        MERCHANT
+        ADMIN
+    }
+
+    enum OrderStatus {
+        PENDING
+        PAID
+        SHIPPED
+        DELIVERED
+        CANCELLED
+        RETURNED
+    }
+
+    enum PaymentStatus {
+        PENDING
+        SUCCESS
+        FAILED
+        REFUNDED
+    }
+
+    class User {
+        - userId: String
+        - username: String
+        - email: String
+        - password: String
+        - createdTime: LocalDateTime
+        + getUserById(id): User
+        + updateProfile(info): void
+        + getRole(): UserRole
+    }
+
+    class Customer {
+        - addresses: List<Address>
+        - preferenceSettings: Preferences
+        + addAddress(addr): void
+        + getAddresses(): List<Address>
+        + addToCart(item): void
+        + placeOrder(items, addr): Order
+    }
+
+    class Merchant {
+        - storeName: String
+        - storeDescription: String
+        - bankInfo: BankInfo
+        - rating: float
+        + createProduct(info): Product
+        + updateProduct(id, info): void
+        + getProducts(): List<Product>
+        + handleOrder(orderId): void
+        + shipOrder(orderId, logistics): void
+    }
+
+    class Admin {
+        - permissions: List<String>
+        + approveMerchant(merchantId): void
+        + blockMerchant(merchantId): void
+        + reviewProduct(productId): void
+        + generateReport(): Report
+    }
+
+    class Address {
+        - addressId: String
+        - province: String
+        - city: String
+        - district: String
+        - detail: String
+        - zipCode: String
+        + isValid(): boolean
+    }
+
+    class Preferences {
+        - favoriteCategories: List<Category>
+        - priceRange: PriceRange
+        - notifications: NotificationConfig
+    }
+
+    class Category {
+        - categoryId: String
+        - categoryName: String
+        - description: String
+        - parentCategory: Category
+        + getSubcategories(): List<Category>
+        + getProducts(): List<Product>
+    }
+
+    class Product {
+        - productId: String
+        - name: String
+        - description: String
+        - price: Money
+        - category: Category
+        - merchant: Merchant
+        - stock: Integer
+        - rating: float
+        - images: List<String>
+        + getDetails(): ProductDetail
+        + checkStock(quantity): boolean
+        + decreaseStock(quantity): void
+        + addReview(review): void
+    }
+
+    class Money {
+        - amount: BigDecimal
+        - currency: Currency
+        + add(other): Money
+        + subtract(other): Money
+        + multiply(factor): Money
+    }
+
+    class Cart {
+        - cartId: String
+        - customer: Customer
+        - items: List<CartItem>
+        - createdTime: LocalDateTime
+        - updatedTime: LocalDateTime
+        + addItem(product, quantity): void
+        + removeItem(productId): void
+        + getItems(): List<CartItem>
+        + getTotalPrice(): Money
+        + isEmpty(): boolean
+    }
+
+    class CartItem {
+        - itemId: String
+        - product: Product
+        - quantity: Integer
+        - price: Money
+        - addedTime: LocalDateTime
+        + getSubtotal(): Money
+        + updateQuantity(newQuantity): void
+    }
+
+    class Order {
+        - orderId: String
+        - customer: Customer
+        - items: List<OrderItem>
+        - shippingAddress: Address
+        - status: OrderStatus
+        - totalPrice: Money
+        - createdTime: LocalDateTime
+        - updatedTime: LocalDateTime
+        - payment: Payment
+        - shipment: Shipment
+        + confirm(): void
+        + cancel(): void
+        + requestReturn(): void
+        + getStatus(): OrderStatus
+        + calculateTotalPrice(): Money
+    }
+
+    class OrderItem {
+        - itemId: String
+        - product: Product
+        - quantity: Integer
+        - unitPrice: Money
+        - order: Order
+        + getSubtotal(): Money
+    }
+
+    class Payment {
+        - paymentId: String
+        - order: Order
+        - amount: Money
+        - paymentMethod: PaymentMethod
+        - status: PaymentStatus
+        - transactionId: String
+        - createdTime: LocalDateTime
+        - completedTime: LocalDateTime
+        + requestPayment(): PaymentRequest
+        + confirmPayment(transactionId): void
+        + refund(): void
+    }
+
+    enum PaymentMethod {
+        ALIPAY
+        WECHAT_PAY
+        CREDIT_CARD
+        BANK_TRANSFER
+    }
+
+    class Shipment {
+        - shipmentId: String
+        - order: Order
+        - logistics: LogisticsProvider
+        - trackingNumber: String
+        - status: ShipmentStatus
+        - shippedTime: LocalDateTime
+        - deliveredTime: LocalDateTime
+        + ship(provider, trackingNo): void
+        + updateStatus(newStatus): void
+        + getTrackingInfo(): TrackingInfo
+    }
+
+    enum ShipmentStatus {
+        PENDING
+        SHIPPED
+        IN_TRANSIT
+        DELIVERED
+        LOST
+        RETURNED
+    }
+
+    class LogisticsProvider {
+        - providerId: String
+        - name: String
+        - cost: Money
+        + calculateShippingFee(address): Money
+        + trackPackage(trackingNo): TrackingInfo
+    }
+
+    class TrackingInfo {
+        - trackingNumber: String
+        - currentLocation: String
+        - status: String
+        - estimatedDeliveryTime: LocalDateTime
+        - events: List<TrackingEvent>
+    }
+
+    class Review {
+        - reviewId: String
+        - product: Product
+        - customer: Customer
+        - rating: Integer
+        - comment: String
+        - images: List<String>
+        - createdTime: LocalDateTime
+        + isValid(): boolean
+    }
+
+    class BankInfo {
+        - bankName: String
+        - accountName: String
+        - accountNumber: String
+    }
+
+    class PriceRange {
+        - minPrice: Money
+        - maxPrice: Money
+    }
+
+    User <|-- Customer
+    User <|-- Merchant
+    User <|-- Admin
+
+    Product "1" -- "*" OrderItem
+    Product "*" -- "1" Category
+    Product "*" -- "1" Merchant
+    Product "*" -- "*" Review
+
+    Customer "1" -- "*" Address
+    Customer "1" -- "1" Cart
+    Customer "1" -- "*" Order
+    Customer "*" -- "*" Review
+
+    Merchant "1" -- "*" Product
+    Merchant "1" -- "1" BankInfo
+
+    Cart "1" -- "*" CartItem
+    CartItem "1" -- "1" Product
+
+    Order "1" -- "*" OrderItem
+    Order "1" -- "1" Customer
+    Order "1" -- "1" Address
+    Order "1" -- "1" Payment
+    Order "1" -- "1" Shipment
+
+    Payment "1" -- "1" Order
+
+    Shipment "1" -- "1" Order
+    Shipment "*" -- "1" LogisticsProvider
+
+    Review "1" -- "1" Product
+    Review "1" -- "1" Customer
+
+    Customer "1" -- "1" Preferences
+    Preferences "*" -- "*" Category
+}
+
+@enduml

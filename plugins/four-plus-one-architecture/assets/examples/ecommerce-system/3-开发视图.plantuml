@@ -1,0 +1,214 @@
+@startuml ecommerce-development-view
+!include <C4/C4_Component>
+
+title 电商系统开发视图 - 模块和分层结构
+
+package "com.example.ecommerce" {
+    package "user" {
+        package "user.domain" {
+            component [User Service] as UserService
+            component [User Repository] as UserRepo
+        }
+        package "user.application" {
+            component [Register Service] as RegisterSvc
+            component [Login Service] as LoginSvc
+        }
+        package "user.api" {
+            component [User Controller] as UserCtrl
+        }
+    }
+
+    package "product" {
+        package "product.domain" {
+            component [Product Service] as ProdService
+            component [Product Repository] as ProdRepo
+            component [Category Service] as CatService
+        }
+        package "product.application" {
+            component [Product Manager] as ProdMgr
+            component [Inventory Manager] as InvMgr
+        }
+        package "product.infrastructure" {
+            component [Product DAO] as ProdDAO
+            component [Search Index] as SearchIdx
+        }
+        package "product.api" {
+            component [Product Controller] as ProdCtrl
+            component [Category Controller] as CatCtrl
+        }
+    }
+
+    package "order" {
+        package "order.domain" {
+            component [Order Service] as OrderService
+            component [Order Repository] as OrderRepo
+        }
+        package "order.application" {
+            component [Place Order Service] as PlaceOrderSvc
+            component [Order Query Service] as OrderQuerySvc
+        }
+        package "order.infrastructure" {
+            component [Order DAO] as OrderDAO
+            component [Order Event Publisher] as OrderEventPub
+        }
+        package "order.api" {
+            component [Order Controller] as OrderCtrl
+        }
+    }
+
+    package "payment" {
+        package "payment.domain" {
+            component [Payment Service] as PaymentService
+            component [Payment Repository] as PaymentRepo
+        }
+        package "payment.application" {
+            component [Payment Manager] as PaymentMgr
+            component [Refund Service] as RefundSvc
+        }
+        package "payment.infrastructure" {
+            component [Payment Gateway Client] as PaymentGWClient
+            component [Payment DAO] as PaymentDAO
+        }
+        package "payment.api" {
+            component [Payment Controller] as PaymentCtrl
+            component [Callback Handler] as CallbackHandler
+        }
+    }
+
+    package "shipment" {
+        package "shipment.domain" {
+            component [Shipment Service] as ShipService
+            component [Logistics Provider] as LogisticsProv
+        }
+        package "shipment.application" {
+            component [Ship Manager] as ShipMgr
+            component [Tracking Service] as TrackingSvc
+        }
+        package "shipment.infrastructure" {
+            component [Shipment DAO] as ShipDAO
+            component [Logistics API Client] as LogisticsClient
+        }
+        package "shipment.api" {
+            component [Shipment Controller] as ShipCtrl
+        }
+    }
+
+    package "cart" {
+        package "cart.domain" {
+            component [Cart Service] as CartService
+            component [Cart Repository] as CartRepo
+        }
+        package "cart.application" {
+            component [Add To Cart] as AddToCart
+            component [Cart Manager] as CartMgr
+        }
+        package "cart.infrastructure" {
+            component [Cart Cache] as CartCache
+            component [Cart DAO] as CartDAO
+        }
+        package "cart.api" {
+            component [Cart Controller] as CartCtrl
+        }
+    }
+
+    package "common" {
+        package "common.domain" {
+            component [Base Entity] as BaseEntity
+            component [Money] as Money
+            component [Address] as Address
+        }
+        package "common.infrastructure" {
+            component [Base Repository] as BaseRepo
+            component [Event Bus] as EventBus
+            component [Cache Manager] as CacheMgr
+            component [Logger] as Logger
+        }
+        package "common.api" {
+            component [Error Handler] as ErrorHandler
+            component [Request Interceptor] as ReqInterceptor
+            component [Response Formatter] as RespFormatter
+        }
+    }
+
+    package "config" {
+        component [Database Config] as DBConfig
+        component [Cache Config] as CacheConfig
+        component [MQ Config] as MQConfig
+        component [Security Config] as SecConfig
+    }
+
+    component "API Gateway" as APIGw
+    component "Message Queue" as MQ
+    component "Cache Layer" as Cache
+    component "Database" as DB
+    component "Payment Gateway" as PaymentGW
+    component "Logistics API" as LogisticsAPI
+
+    OrderCtrl --> PlaceOrderSvc
+    PlaceOrderSvc --> OrderService
+    OrderService --> OrderRepo
+    OrderRepo --> OrderDAO
+    OrderDAO --> DB
+
+    ProdCtrl --> ProdMgr
+    ProdMgr --> ProdService
+    ProdService --> ProdRepo
+    ProdRepo --> ProdDAO
+    ProdDAO --> DB
+    ProdDAO --> SearchIdx
+
+    PaymentCtrl --> PaymentMgr
+    PaymentMgr --> PaymentService
+    PaymentService --> PaymentGWClient
+    PaymentGWClient --> PaymentGW
+
+    PlaceOrderSvc --> OrderEventPub
+    OrderEventPub --> MQ
+    PaymentMgr --> PaymentEventPub: "emit payment event"
+    PaymentEventPub --> MQ
+
+    ShipMgr --> LogisticsClient
+    LogisticsClient --> LogisticsAPI
+
+    CartCtrl --> CartMgr
+    CartMgr --> CartService
+    CartService --> CartCache
+    CartCache --> Cache
+
+    OrderDAO --> OrderEventPub
+    PlaceOrderSvc --> InvMgr
+    InvMgr --> ProdService
+
+    APIGw --> OrderCtrl
+    APIGw --> ProdCtrl
+    APIGw --> PaymentCtrl
+    APIGw --> CartCtrl
+    APIGw --> ShipCtrl
+
+    OrderDAO --> BaseRepo
+    ProdDAO --> BaseRepo
+    PaymentDAO --> BaseRepo
+    ShipDAO --> BaseRepo
+
+    note right of OrderCtrl
+        REST API Layer
+        处理HTTP请求
+    end note
+
+    note right of PlaceOrderSvc
+        Application Service Layer
+        业务流程协调
+    end note
+
+    note right of OrderService
+        Domain Service Layer
+        业务逻辑实现
+    end note
+
+    note right of OrderDAO
+        Infrastructure Layer
+        数据访问和外部集成
+    end note
+}
+
+@enduml

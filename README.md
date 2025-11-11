@@ -1,3 +1,5 @@
+[中文版本](README-zh.md) | **English**
+
 # Claude Code Plugins: Orchestration and Automation
 
 > **⚡ Updated for Sonnet 4.5 & Haiku 4.5** — All agents optimized for latest models with hybrid orchestration

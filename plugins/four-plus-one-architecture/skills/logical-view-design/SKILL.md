@@ -1,3 +1,8 @@
+---
+name: logical-view-design
+description: 逻辑视图设计技能，指导如何进行领域建模、设计类结构和定义对象关系。包括SOLID原则应用、设计模式、对象交互和完整的设计流程
+---
+
 # 逻辑视图设计技能 (Logical View Design Skill)
 
 ## 概述

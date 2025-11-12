@@ -1,3 +1,8 @@
+---
+name: 41view-integration
+description: 4+1视图整合技能，指导如何整合和对齐四+1个视图，确保架构设计的完整性和一致性。包括视图对齐检查、非功能需求分配、冲突解决和验证清单
+---
+
 # 4+1视图整合技能 (4+1 View Integration Skill)
 
 ## 概述
@@ -46,6 +51,91 @@ Level 4: 可实现性（Feasibility）
 ```
 
 ## 设计流程
+
+### 非功能需求的视图分配（Philippe Kruchten）
+
+**关键原则**：
+不同的非功能需求应该在特定的视图中重点处理。不同视图有不同的NFR关注点。
+
+**明确分配表**：
+
+| 非功能需求 | 主要视图 | 辅助视图 | 处理方式 |
+|-----------|---------|---------|---------|
+| **功能性（Functionality）** | Logical | Scenario | 类、方法、接口定义 |
+| **性能（Performance）** | Process | Physical | 并发设计、缓存、负载均衡 |
+| **可扩展性（Scalability）** | Process | Physical | 无状态设计、水平扩展 |
+| **可用性（Availability）** | Physical | Process | 冗余、故障转移、备份 |
+| **可靠性/容错（Reliability）** | Process | Physical | 重试、超时、补偿事务 |
+| **吞吐量（Throughput）** | Process | Physical | 并发处理、批量操作、异步 |
+| **可维护性（Maintainability）** | Development | Logical | 模块化、分层、清晰接口 |
+| **可重用性（Reusability）** | Development | Logical | 通用机制、框架、库 |
+| **可移植性（Portability）** | Development | Physical | 分层隔离、抽象依赖 |
+| **安全性（Security）** | 所有视图 | - | 多层防护 |
+| **系统完整性（System Integrity）** | Process | Logical | 事务、锁、一致性设计 |
+| **响应性（Responsiveness）** | Process | - | 优先级、实时调度 |
+| **分布性（Distribution）** | Process | Physical | 分布式通信、数据复制 |
+| **可测试性（Testability）** | Development | - | 模块独立性、依赖注入 |
+
+**详细说明**：
+
+#### 性能（Performance）在Process和Physical中的区分
+
+**Process View职责**：
+- 并发设计以提高吞吐量
+- 异步处理减少等待
+- 缓存策略
+
+**Physical View职责**：
+- 负载均衡分散请求
+- 缓存层（Redis, CDN）
+- 数据库优化（索引、分区）
+
+#### 安全性（Security）的多层防护
+
+**在各视图中的体现**：
+- **Logical**：数据验证、业务规则约束
+- **Development**：安全库、安全编码
+- **Process**：认证、授权、加密通信
+- **Physical**：网络隔离、防火墙
+
+**验证清单**：
+
+```markdown
+## 非功能需求覆盖检查
+
+### 性能
+- [ ] 定义了性能目标（响应时间、吞吐量）
+- [ ] 在进程视图中有并发设计
+- [ ] 在物理视图中有性能优化配置
+- [ ] 有性能测试计划
+- [ ] 已进行hollow architecture原型性能验证
+
+### 可用性
+- [ ] 定义了可用性目标（如99.9%）
+- [ ] 在物理视图中有冗余设计
+- [ ] 有自动故障转移机制
+- [ ] 有监控和告警
+- [ ] 有故障恢复计划
+
+### 可扩展性
+- [ ] 定义了扩展性目标（用户数、数据量）
+- [ ] 进程视图中有无状态设计
+- [ ] 物理视图中支持水平扩展
+- [ ] 有扩展测试计划
+
+### 可维护性
+- [ ] 开发视图中有清晰的模块划分
+- [ ] 有严格的分层
+- [ ] 无循环依赖
+- [ ] 有架构文档和设计指南
+
+### 安全性
+- [ ] 每个视图都考虑了安全性
+- [ ] 物理视图有网络隔离和防火墙
+- [ ] 进程视图有认证和授权
+- [ ] 逻辑视图有数据验证和保护
+- [ ] 开发视图有安全库和最佳实践
+```
 
 ### Step 1：场景视图 → 逻辑视图的对齐
 

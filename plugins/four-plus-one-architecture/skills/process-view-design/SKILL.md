@@ -1,3 +1,8 @@
+---
+name: process-view-design
+description: 进程视图设计技能，指导如何设计系统的并发性和运行时行为。包括序列图设计、活动图、进程通信、性能优化和可靠性设计
+---
+
 # 进程视图设计技能 (Process View Design Skill)
 
 ## 概述
@@ -67,7 +72,159 @@ Python asyncio, Go goroutines, Kotlin coroutines
 - 难以保证顺序
 - 难以处理失败情况
 
-### 3. 关键路径分析 (Critical Path Analysis)
+### 3. 三层架构设计（Kruchten的进程视图模型）
+
+Philippe Kruchten在原论文中提出，进程视图包含三个不同的抽象层次：
+
+#### Level 1：逻辑网络（Logical Networks）
+
+**定义**：系统的逻辑并发结构，定义哪些东西可以并行执行。
+
+**关键特点**：
+- 从开发视图的模块依赖出发
+- 分析模块间的通信需求
+- 确定哪些模块可以并行运行
+
+**设计方法**：
+```
+Step 1：列出所有开发模块
+  Order Module, Payment Module, Inventory Module, ...
+
+Step 2：分析模块间的依赖
+  Order → Inventory (需要库存服务)
+  Order → Payment (需要支付服务)
+  Payment ↔ Notification (需要通知)
+
+Step 3：确定并行关系
+  Order, Inventory, Payment 可以并行处理
+  Payment 和 Notification 可以异步
+
+Step 4：识别同步点
+  下单时必须同步查库存
+  支付完成后异步通知
+```
+
+**电商下单示例**：
+```
+┌─────────────────────────────────┐
+│        Order Service            │
+├─────────────────────────────────┤
+│ Inputs:  订单请求               │
+│ Outputs: 订单号、支付链接       │
+│                                  │
+│ 内部可并行的逻辑单元：          │
+│  1. 查询库存 (Inventory Module)  │
+│  2. 创建订单 (Order Domain)      │
+│  3. 生成支付链接 (Payment Mod)   │
+└─────────────────────────────────┘
+
+这三个操作在逻辑上可以独立进行，
+但下单和查库存有依赖关系
+```
+
+#### Level 2：进程（Processes）
+
+**定义**：运行时的进程和线程，以及它们之间的同步和通信机制。
+
+**关键特点**：
+- 映射逻辑网络到具体的线程/进程
+- 定义进程间的通信方式
+- 决定同步还是异步通信
+
+**Major Tasks vs Minor Tasks**：
+
+Kruchten强调区分两种任务：
+
+**Major Tasks（主任务）**：
+- 有明确的入口点（例如HTTP请求处理程序）
+- 可以独立启动和停止
+- 有清晰的责任和边界
+- 可以在不同的计算机上运行
+- 通常与开发视图的模块对应
+- 特点：自治性（autonomy）、持久性（persistence）、从属性（subordination）、分布性（distribution）
+
+**Minor Tasks（次任务）**：
+- 由Major Task创建或调用
+- 完成后即终止
+- 通常在同一进程内运行
+- 例如：计算、数据转换、验证
+
+**设计示例**：
+```
+┌─────────────────────────────────────────────────┐
+│              HTTP请求处理线程池                 │
+│         (Major Task: HandleOrderRequest)       │
+├─────────────────────────────────────────────────┤
+│                                                  │
+│  Minor Tasks:                                   │
+│  1. ValidateOrder()      - 验证订单              │
+│  2. ReserveInventory()   - 查询库存              │
+│  3. CreateOrderRecord()  - 创建订单              │
+│  4. GetPaymentGateway()  - 生成支付链接          │
+│                                                  │
+│  (所有Minor Tasks串行执行或并行，取决于依赖)  │
+└─────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────┐
+│      后台消息处理线程池              │
+│  (Major Task: ProcessPaymentMessage)  │
+├──────────────────────────────────────┤
+│                                       │
+│  Minor Tasks:                         │
+│  1. DequeueMessage()  - 取消息         │
+│  2. ProcessPayment()  - 处理支付       │
+│  3. UpdateOrder()     - 更新订单       │
+│  4. SendNotification() - 发送通知      │
+│                                       │
+└──────────────────────────────────────┘
+```
+
+**进程间通信（IPC）**：
+```
+方式1：同步通信（RPC/HTTP）
+  HandleOrderRequest
+    ├─ 调用 ReserveInventory()
+    ├─ 等待结果（阻塞）
+    └─ 继续处理
+
+  适用：低延迟、实时、强一致性需求
+
+方式2：异步通信（消息队列）
+  HandleOrderRequest
+    ├─ 发送 PaymentRequest 消息
+    ├─ 立即返回
+    └─ ProcessPaymentMessage 处理消息
+
+  适用：高吞吐、解耦、最终一致性
+```
+
+#### Level 3：任务（Tasks）
+
+**定义**：最细粒度的执行单元，对应代码层面的操作。
+
+**设计关注点**：
+- 原子性操作
+- 锁和同步原语的使用
+- 死锁风险识别
+- 性能优化
+
+**示例**：
+```
+Minor Task: ReserveInventory()
+  ├─ 获取库存锁 (acquire_lock)
+  ├─ 查询当前库存
+  ├─ 检查是否足够
+  ├─ 扣减库存
+  ├─ 释放库存锁 (release_lock)
+  └─ 返回结果
+
+关键点：
+  - 最小化锁的持有时间
+  - 避免嵌套锁（防止死锁）
+  - 考虑使用乐观锁而不是悲观锁
+```
+
+### 4. 关键路径分析 (Critical Path Analysis)
 
 确定系统中影响性能最大的操作序列。
 

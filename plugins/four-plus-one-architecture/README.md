@@ -10,6 +10,79 @@
 - **实战导向**：所有方法都包含模板、示例和最佳实践
 - **智能协作**：6个专业架构师agents的协作支持
 
+## 📖 理论基础与学术渊源
+
+### Philippe Kruchten 的经典论文
+
+本Plugin基于Philippe Kruchten于1995年在IEEE Software发表的经典论文：
+
+> **Kruchten, P. (1995). "The 4+1 View Model of Software Architecture," *IEEE Software*, 12(6), pp. 42-50.**
+
+**论文的核心贡献**：
+1. **多视图并发描述**：使用5个并发视图系统地描述复杂软件架构
+2. **Stakeholder导向**：每个视图服务于不同的利益相关者（最终用户、程序员、系统工程师等）
+3. **场景驱动**：场景（用例）作为"+1"视图，既驱动又验证架构设计
+4. **Perry & Wolf公式的应用**：每个视图独立应用架构元素、形式和理由
+5. **迭代演化**：强调架构从场景"部分演化"，需要多次迭代
+
+### 理论框架
+
+#### Perry & Wolf 的架构公式
+
+论文基于Perry & Wolf的经典定义：
+```
+Software Architecture = {Elements, Forms, Rationale/Constraints}
+```
+
+**关键创新**：
+- 这个公式**独立应用于每个视图**
+- 每个视图有自己的：
+  - **Elements**（组件、容器、连接器）
+  - **Forms**（工作的模式和形式）
+  - **Rationale**（连接到需求的理由和约束）
+
+#### 多视图的必要性
+
+**原论文的核心动机**：
+- 单一架构图无法表达复杂系统的所有方面
+- 不同的利益相关者（stakeholders）需要看到不同的方面
+- 功能需求和非功能需求需要分离表达
+
+### 与本Plugin的关系
+
+#### 忠实于原论文
+- ✅ 五大视图的准确定义和目的
+- ✅ Stakeholder对应关系
+- ✅ 视图间的映射关系（从场景到逻辑、逻辑到开发等）
+- ✅ 迭代演化的设计过程
+- ✅ 论文原始数据和案例（PABX电信系统、空中交通管制系统）
+
+#### 现代适应
+- 🔄 符号：Booch Notation → PlantUML（基于UML 2.0）
+- 🔄 工具：CASE工具、Ada → 现代技术栈（Kubernetes、Terraform等）
+- 🔄 架构模式：传统分布式 → 云原生、微服务架构
+- 🔄 工作流程：按季度规划 → 敏捷迭代的Sprints
+
+#### 学术严谨性承诺
+- 所有核心概念都直接来自论文
+- 使用原文引用说明关键原则
+- 明确区分论文内容和Plugin的扩展
+- 鼓励读者阅读原论文获得深入理解
+
+### 进一步阅读
+
+**必读论文**：
+1. **Kruchten, P. (1995)**. "The 4+1 View Model of Software Architecture." *IEEE Software*, 12(6), 42-50.
+   - 建议：**所有使用本Plugin的人都应阅读此论文**
+
+**相关书籍**：
+1. **Kruchten, P. (2004)**. *The Rational Unified Process: An Introduction* (3rd ed.). Addison-Wesley.
+   - 4+1在RUP中的应用
+2. **Bass, L., Clements, P., & Kazman, R. (2012)**. *Software Architecture in Practice* (3rd ed.). Addison-Wesley.
+   - SEI的架构实践指南
+
+---
+
 ## 🚀 快速开始
 
 ### 最快速的方式（10分钟）
@@ -82,7 +155,7 @@
 #### 协调Agent
 - **41view-master-architect** - 4+1总协调师，负责视图整合和架构评审
 
-### Skills（8个核心知识模块）
+### Skills（10个核心知识模块）
 
 #### 五大视图Skills
 1. **scenario-view-design** - 用例图和场景设计
@@ -95,6 +168,10 @@
 6. **plantuml-best-practices** - PlantUML绘图规范和最佳实践
 7. **41view-integration** - 视图整合方法和一致性检查
 8. **architecture-documentation** - 架构文档编写规范
+
+#### 高级技能
+9. **architectural-prototyping** - 架构原型设计（演化型原型、Hollow Architecture、性能验证）
+10. **project-size-adaptation** - 项目规模适应（根据项目大小调整方法论应用）
 
 ### Commands（4个工作流）
 

@@ -14,6 +14,40 @@ model: sonnet
 
 ## 主要职责
 
+### 开发视图的内部需求关注（Philippe Kruchten）
+
+**与其他视图的关键区别**：
+逻辑视图主要处理功能需求；而开发视图主要考虑**内部需求**（internal requirements）：
+
+1. **Ease of development**（开发便利性）
+   - 代码的可读性和易理解性
+   - 开发工具支持
+   - 编程模式和框架支持
+
+2. **Software management**（软件管理）
+   - 工作分配给开发团队
+   - 团队组织结构
+   - 版本管理和发布策略
+
+3. **Reuse or commonality**（重用或通用性）
+   - 共享组件和库
+   - 模式和框架
+   - 产品线基础设施
+
+4. **Constraints imposed by toolset or programming language**（工具集或编程语言的约束）
+   - 语言特性和限制
+   - 构建工具特性
+   - 依赖管理
+
+**开发视图作为基础**：
+开发视图是以下活动的基础：
+- **Requirement allocation**（需求分配）- 哪个模块实现哪个功能
+- **Allocation of work to teams**（工作分配给团队）- 甚至影响团队组织
+- **Cost evaluation and planning**（成本评估和计划）
+- **Monitoring the progress of the project**（监控项目进度）
+- **Reasoning about reuse, portability and security**（推理软件重用、可移植性和安全性）
+- **Establishing a line-of-product**（建立产品线）
+
 ### 1. 模块分解
 
 将系统分解成相对独立的模块：
@@ -81,6 +115,53 @@ com.example.ecommerce
 - 易于测试和维护
 - 支持并行开发
 - 便于技术升级
+
+**严格分层规则**（Philippe Kruchten）：
+> "A subsystem in a certain layer can only depend on subsystem that are in the same layer or in layers below."
+
+**强制约束**：
+- 某层的子系统**只能**依赖：
+  - 同层的子系统
+  - 下层的子系统
+- **不能**依赖上层的子系统
+
+**目的**：
+1. **最小化复杂依赖网络** - 避免组件间的复杂相互依赖
+2. **允许逐层发布策略** - 可以独立发布每一层，支持增量更新
+
+**验证方法**：
+- 使用ArchUnit等工具检查跨层依赖
+- 在CI/CD中强制执行
+- 定期架构审查
+
+### 产品线视角
+
+**何时适用**：
+当系统是产品线的一部分，有共享的基础设施和多个相似产品时。
+
+**产品线架构模式**（源自论文ATC系统案例）：
+
+**分层示例**：
+1. **Layer 1-2: Domain-independent基础设施**
+   - 硬件、OS、COTS
+   - 通用工具和库
+   - 跨产品线通用
+   - **隔离硬件、OS、COTS的变化**
+
+2. **Layer 3: Domain-specific框架**
+   - 特定领域的框架
+   - 通用服务机制
+   - 定义产品线的特性
+
+3. **Layer 4+: 产品特定实现**
+   - 具体业务逻辑
+   - 产品差异化功能
+   - 客户特定定制
+
+**好处**：
+- 新产品可以快速基于已有框架构建
+- 共享代码和学习
+- 降低产品线管理成本
 
 ### 4. 依赖管理
 

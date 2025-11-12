@@ -1,3 +1,8 @@
+---
+name: scenario-view-design
+description: 场景视图设计技能，指导如何创建用例图、编写场景描述和分析非功能需求。包括用例识别、场景脚本化、需求验证和完整的设计流程
+---
+
 # 场景视图设计技能 (Scenario View Design Skill)
 
 ## 概述

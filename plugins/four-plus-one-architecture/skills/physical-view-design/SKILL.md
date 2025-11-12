@@ -1,3 +1,8 @@
+---
+name: physical-view-design
+description: 物理视图设计技能，指导如何进行部署规划和网络拓扑设计。包括部署架构、网络分层、高可用设计、可扩展性规划和云原生部署
+---
+
 # 物理视图设计技能 (Physical View Design Skill)
 
 ## 概述

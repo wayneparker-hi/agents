@@ -1,3 +1,8 @@
+---
+name: plantuml-best-practices
+description: PlantUML最佳实践技能，指导如何使用PlantUML绘制4+1架构图。包括各类图的标准模板、颜色约定、排版规范、自动化生成和版本控制最佳实践
+---
+
 # PlantUML最佳实践技能 (PlantUML Best Practices Skill)
 
 ## 概述

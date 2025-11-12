@@ -1,3 +1,8 @@
+---
+name: development-view-design
+description: 开发视图设计技能，指导如何进行模块分解、设计包结构和分层架构。包括高内聚低耦合原则、分层约束、依赖管理和代码组织最佳实践
+---
+
 # 开发视图设计技能 (Development View Design Skill)
 
 ## 概述

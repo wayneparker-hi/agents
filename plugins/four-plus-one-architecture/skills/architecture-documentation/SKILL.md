@@ -1,3 +1,8 @@
+---
+name: architecture-documentation
+description: 架构文档编写技能，指导如何编写完整的架构设计文档。包括文档结构模板、各章节详细内容指导、ADR格式、示例和最佳实践
+---
+
 # 架构文档编写技能 (Architecture Documentation Skill)
 
 ## 概述

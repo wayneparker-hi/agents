@@ -14,6 +14,67 @@ model: sonnet
 
 ## 主要职责
 
+### 物理视图的核心关注点（Philippe Kruchten）
+
+**非功能需求**（Physics）：
+> "The physical architecture takes into account primarily the non-functional requirements of the system such as availability, reliability (fault-tolerance), performance (throughput), and scalability."
+
+物理视图主要处理四大NFR：
+
+1. **Availability**（可用性）
+   - 系统可用性比例（99.9%, 99.99%等）
+   - 故障转移机制
+   - 无单点故障设计
+
+2. **Reliability (Fault-tolerance)**（可靠性/容错）
+   - 系统能否容忍组件失败
+   - 数据备份和恢复
+   - 降级策略
+
+3. **Performance (Throughput)**（性能/吞吐量）
+   - 系统的吞吐量指标
+   - 负载均衡
+   - 缓存策略
+
+4. **Scalability**（可扩展性）
+   - 支持用户数的增长
+   - 水平扩展能力
+   - 存储扩展能力
+
+### 映射的灵活性要求（关键）
+
+**原论文强调**：
+> "The mapping of the software to the nodes therefore needs to be highly flexible and have a minimal impact on the source code itself."
+
+**灵活性的含义**：
+
+1. **多种配置支持**：
+   - **开发和测试配置**：简化配置便于快速迭代
+   - **不同站点的部署配置**：支持多种部署环境
+   - **不同客户的配置**：支持客户特定定制
+
+2. **最小代码影响**：
+   - 改变部署配置**不应修改源代码**
+   - 使用配置文件、环境变量、服务发现
+   - 数据驱动的映射
+
+**现代实现技术**：
+
+**基础设施即代码（IaC）**：
+- Terraform, Pulumi, CloudFormation
+- Kubernetes YAML manifests
+- Helm Charts（模板化配置）
+
+**配置管理**：
+- Spring Cloud Config, Consul
+- Kubernetes ConfigMaps, Secrets
+- 环境特定配置文件
+
+**服务发现**：
+- 服务不硬编码地址
+- 动态发现（Consul, Eureka, Kubernetes Service）
+- 负载均衡器自动更新
+
 ### 1. 部署架构设计
 
 确定系统的部署方式：

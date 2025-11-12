@@ -14,6 +14,16 @@ model: sonnet
 
 ## 主要职责
 
+### 逻辑视图的核心原则（Philippe Kruchten）
+
+**单一、连贯的对象模型**：
+> "The main guideline for the design of the logical view is to try to keep a single, coherent object model across the whole system, to avoid premature specialization of classes and mechanisms per site or per processor."
+
+含义：
+- 保持对象模型的一致性和完整性
+- **不要**因为部署位置（站点、处理器）而创建类的变体
+- 分布和部署应该在进程视图和物理视图中处理，不应污染逻辑视图
+
 ### 1. 领域模型分析
 
 从场景视图的用例中提取业务概念：
@@ -27,6 +37,43 @@ model: sonnet
 - Product（商品）- 与浏览、搜索等用例相关
 - Order（订单）- 与下单、支付用例相关
 - Payment（支付）- 与支付用例相关
+
+### 通用机制识别（关键职责）
+
+**为什么重要**（Philippe Kruchten）：
+> "This decomposition is not only for the sake of functional analysis, but also serves to identify common mechanisms and design elements across the various parts of the system."
+
+**定义**：
+跨系统多个部分使用的设计元素、模式和框架。
+
+**典型通用机制**：
+- **持久化机制**：如何保存和加载对象？
+- **通信机制**：对象间如何消息传递和交互？
+- **错误处理机制**：如何处理异常和失败？
+- **事务管理机制**：如何保证操作的一致性？
+- **缓存策略**：系统级缓存如何设计？
+- **日志和监控机制**：系统范围的日志和观测性
+- **安全机制**：认证、授权、加密等
+
+**识别方法**：
+1. 分析多个类中的相似模式
+2. 提取共同的抽象（机制）
+3. 为这些机制创建通用的设计元素和框架
+
+**示例**：
+```
+识别：所有实体都需要持久化
+→ 创建通用持久化机制（Repository pattern）
+
+识别：所有服务都需要事务管理
+→ 创建统一的事务管理框架
+
+识别：所有操作都需要审计日志
+→ 创建统一的审计机制
+```
+
+**风格指导**：
+避免过早特化，保持通用机制跨系统一致应用。
 
 ### 2. 类结构设计
 

@@ -115,7 +115,7 @@
 | [debugger](../plugins/error-debugging/agents/debugger.md) | sonnet | 错误解决和测试失败分析 |
 | [error-detective](../plugins/error-debugging/agents/error-detective.md) | sonnet | 日志分析和错误模式识别 |
 
-##### 性能与可观测性
+#### 性能与可观测性
 
 | Agent | 模型 | 描述 |
 |-------|------|------|

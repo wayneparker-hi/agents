@@ -20,6 +20,7 @@ This skill provides comprehensive guidance for setting up and configuring SAST t
 ## Core Capabilities
 
 ### 1. Semgrep Configuration
+
 - Custom rule creation with pattern matching
 - Language-specific security rules (Python, JavaScript, Go, Java, etc.)
 - CI/CD integration (GitHub Actions, GitLab CI, Jenkins)
@@ -27,6 +28,7 @@ This skill provides comprehensive guidance for setting up and configuring SAST t
 - Organizational policy enforcement
 
 ### 2. SonarQube Setup
+
 - Quality gate configuration
 - Security hotspot analysis
 - Code coverage and technical debt tracking
@@ -34,6 +36,7 @@ This skill provides comprehensive guidance for setting up and configuring SAST t
 - Enterprise integration with LDAP/SAML
 
 ### 3. CodeQL Analysis
+
 - GitHub Advanced Security integration
 - Custom query development
 - Vulnerability variant analysis
@@ -43,40 +46,31 @@ This skill provides comprehensive guidance for setting up and configuring SAST t
 ## Quick Start
 
 ### Initial Assessment
+
 1. Identify primary programming languages in your codebase
 2. Determine compliance requirements (PCI-DSS, SOC 2, etc.)
 3. Choose SAST tool based on language support and integration needs
 4. Review baseline scan to understand current security posture
 
 ### Basic Setup
+
 ```bash
 # Semgrep quick start
 pip install semgrep
 semgrep --config=auto --error
 
 # SonarQube with Docker
-docker run -d --name sonarqube -p 9000:9000 sonarqube:latest
+docker run -d --name sonarqube -p 9000:9000 sonarqube:10.8-community
 
 # CodeQL CLI setup
 gh extension install github/gh-codeql
 codeql database create mydb --language=python
 ```
 
-## Reference Documentation
-
-- [Semgrep Rule Creation](references/semgrep-rules.md) - Pattern-based security rule development
-- [SonarQube Configuration](references/sonarqube-config.md) - Quality gates and profiles
-- [CodeQL Setup Guide](references/codeql-setup.md) - Query development and workflows
-
-## Templates & Assets
-
-- [semgrep-config.yml](assets/semgrep-config.yml) - Production-ready Semgrep configuration
-- [sonarqube-settings.xml](assets/sonarqube-settings.xml) - SonarQube quality profile template
-- [run-sast.sh](scripts/run-sast.sh) - Automated SAST execution script
-
 ## Integration Patterns
 
 ### CI/CD Pipeline Integration
+
 ```yaml
 # GitHub Actions example
 - name: Run Semgrep
@@ -88,6 +82,7 @@ codeql database create mydb --language=python
 ```
 
 ### Pre-commit Hook
+
 ```bash
 # .pre-commit-config.yaml
 - repo: https://github.com/returntocorp/semgrep
@@ -127,11 +122,13 @@ codeql database create mydb --language=python
 ## Common Use Cases
 
 ### New Project Setup
+
 ```bash
 ./scripts/run-sast.sh --setup --language python --tools semgrep,sonarqube
 ```
 
 ### Custom Rule Development
+
 ```yaml
 # See references/semgrep-rules.md for detailed examples
 rules:
@@ -142,6 +139,7 @@ rules:
 ```
 
 ### Compliance Scanning
+
 ```bash
 # PCI-DSS focused scan
 semgrep --config p/pci-dss --json -o pci-scan-results.json
@@ -150,18 +148,21 @@ semgrep --config p/pci-dss --json -o pci-scan-results.json
 ## Troubleshooting
 
 ### High False Positive Rate
+
 - Review and tune rule sensitivity
 - Add path filters to exclude test files
 - Use nostmt metadata for noisy patterns
 - Create organization-specific rule exceptions
 
 ### Performance Issues
+
 - Enable incremental scanning
 - Parallelize scans across modules
 - Optimize rule patterns for efficiency
 - Cache dependencies and scan results
 
 ### Integration Failures
+
 - Verify API tokens and credentials
 - Check network connectivity and proxy settings
 - Review SARIF output format compatibility
@@ -175,11 +176,11 @@ semgrep --config p/pci-dss --json -o pci-scan-results.json
 
 ## Tool Comparison
 
-| Tool | Best For | Language Support | Cost | Integration |
-|------|----------|------------------|------|-------------|
-| Semgrep | Custom rules, fast scans | 30+ languages | Free/Enterprise | Excellent |
-| SonarQube | Code quality + security | 25+ languages | Free/Commercial | Good |
-| CodeQL | Deep analysis, research | 10+ languages | Free (OSS) | GitHub native |
+| Tool      | Best For                 | Language Support | Cost            | Integration   |
+| --------- | ------------------------ | ---------------- | --------------- | ------------- |
+| Semgrep   | Custom rules, fast scans | 30+ languages    | Free/Enterprise | Excellent     |
+| SonarQube | Code quality + security  | 25+ languages    | Free/Commercial | Good          |
+| CodeQL    | Deep analysis, research  | 10+ languages    | Free (OSS)      | GitHub native |
 
 ## Next Steps
 

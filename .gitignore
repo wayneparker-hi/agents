@@ -23,3 +23,7 @@ node_modules
 .sass-cache
 .claude
 /.idea/
+.worktrees/
+
+# Gemini CLI generated commands
+commands/**/*.toml

@@ -23,22 +23,26 @@ Comprehensive guide to implementing robust testing strategies in Python using py
 ## Core Concepts
 
 ### 1. Test Types
+
 - **Unit Tests**: Test individual functions/classes in isolation
 - **Integration Tests**: Test interaction between components
 - **Functional Tests**: Test complete features end-to-end
 - **Performance Tests**: Measure speed and resource usage
 
 ### 2. Test Structure (AAA Pattern)
+
 - **Arrange**: Set up test data and preconditions
 - **Act**: Execute the code under test
 - **Assert**: Verify the results
 
 ### 3. Test Coverage
+
 - Measure what code is exercised by tests
 - Identify untested code paths
 - Aim for meaningful coverage, not just high percentages
 
 ### 4. Test Isolation
+
 - Tests should be independent
 - No shared state between tests
 - Each test should clean up after itself
@@ -362,256 +366,52 @@ def test_exception_info():
     assert "invalid literal" in str(exc_info.value)
 ```
 
-## Advanced Patterns
+For advanced patterns including async testing, monkeypatching, temporary files, conftest setup, property-based testing, database testing, CI/CD integration, and configuration files, see [references/advanced-patterns.md](references/advanced-patterns.md)
 
-### Pattern 6: Testing Async Code
+## Test Design Principles
+
+### One Behavior Per Test
+
+Each test should verify exactly one behavior. This makes failures easy to diagnose and tests easy to maintain.
 
 ```python
-# test_async.py
-import pytest
-import asyncio
+# BAD - testing multiple behaviors
+def test_user_service():
+    user = service.create_user(data)
+    assert user.id is not None
+    assert user.email == data["email"]
+    updated = service.update_user(user.id, {"name": "New"})
+    assert updated.name == "New"
 
-async def fetch_data(url: str) -> dict:
-    """Fetch data asynchronously."""
-    await asyncio.sleep(0.1)
-    return {"url": url, "data": "result"}
+# GOOD - focused tests
+def test_create_user_assigns_id():
+    user = service.create_user(data)
+    assert user.id is not None
 
+def test_create_user_stores_email():
+    user = service.create_user(data)
+    assert user.email == data["email"]
 
-@pytest.mark.asyncio
-async def test_fetch_data():
-    """Test async function."""
-    result = await fetch_data("https://api.example.com")
-    assert result["url"] == "https://api.example.com"
-    assert "data" in result
-
-
-@pytest.mark.asyncio
-async def test_concurrent_fetches():
-    """Test concurrent async operations."""
-    urls = ["url1", "url2", "url3"]
-    tasks = [fetch_data(url) for url in urls]
-    results = await asyncio.gather(*tasks)
-
-    assert len(results) == 3
-    assert all("data" in r for r in results)
-
-
-@pytest.fixture
-async def async_client():
-    """Async fixture."""
-    client = {"connected": True}
-    yield client
-    client["connected"] = False
-
-
-@pytest.mark.asyncio
-async def test_with_async_fixture(async_client):
-    """Test using async fixture."""
-    assert async_client["connected"] is True
+def test_update_user_changes_name():
+    user = service.create_user(data)
+    updated = service.update_user(user.id, {"name": "New"})
+    assert updated.name == "New"
 ```
 
-### Pattern 7: Monkeypatch for Testing
+### Test Error Paths
+
+Always test failure cases, not just happy paths.
 
 ```python
-# test_environment.py
-import os
-import pytest
+def test_get_user_raises_not_found():
+    with pytest.raises(UserNotFoundError) as exc_info:
+        service.get_user("nonexistent-id")
 
-def get_database_url() -> str:
-    """Get database URL from environment."""
-    return os.environ.get("DATABASE_URL", "sqlite:///:memory:")
+    assert "nonexistent-id" in str(exc_info.value)
 
-
-def test_database_url_default():
-    """Test default database URL."""
-    # Will use actual environment variable if set
-    url = get_database_url()
-    assert url
-
-
-def test_database_url_custom(monkeypatch):
-    """Test custom database URL with monkeypatch."""
-    monkeypatch.setenv("DATABASE_URL", "postgresql://localhost/test")
-    assert get_database_url() == "postgresql://localhost/test"
-
-
-def test_database_url_not_set(monkeypatch):
-    """Test when env var is not set."""
-    monkeypatch.delenv("DATABASE_URL", raising=False)
-    assert get_database_url() == "sqlite:///:memory:"
-
-
-class Config:
-    """Configuration class."""
-
-    def __init__(self):
-        self.api_key = "production-key"
-
-    def get_api_key(self):
-        return self.api_key
-
-
-def test_monkeypatch_attribute(monkeypatch):
-    """Test monkeypatching object attributes."""
-    config = Config()
-    monkeypatch.setattr(config, "api_key", "test-key")
-    assert config.get_api_key() == "test-key"
-```
-
-### Pattern 8: Temporary Files and Directories
-
-```python
-# test_file_operations.py
-import pytest
-from pathlib import Path
-
-def save_data(filepath: Path, data: str):
-    """Save data to file."""
-    filepath.write_text(data)
-
-
-def load_data(filepath: Path) -> str:
-    """Load data from file."""
-    return filepath.read_text()
-
-
-def test_file_operations(tmp_path):
-    """Test file operations with temporary directory."""
-    # tmp_path is a pathlib.Path object
-    test_file = tmp_path / "test_data.txt"
-
-    # Save data
-    save_data(test_file, "Hello, World!")
-
-    # Verify file exists
-    assert test_file.exists()
-
-    # Load and verify data
-    data = load_data(test_file)
-    assert data == "Hello, World!"
-
-
-def test_multiple_files(tmp_path):
-    """Test with multiple temporary files."""
-    files = {
-        "file1.txt": "Content 1",
-        "file2.txt": "Content 2",
-        "file3.txt": "Content 3"
-    }
-
-    for filename, content in files.items():
-        filepath = tmp_path / filename
-        save_data(filepath, content)
-
-    # Verify all files created
-    assert len(list(tmp_path.iterdir())) == 3
-
-    # Verify contents
-    for filename, expected_content in files.items():
-        filepath = tmp_path / filename
-        assert load_data(filepath) == expected_content
-```
-
-### Pattern 9: Custom Fixtures and Conftest
-
-```python
-# conftest.py
-"""Shared fixtures for all tests."""
-import pytest
-
-@pytest.fixture(scope="session")
-def database_url():
-    """Provide database URL for all tests."""
-    return "postgresql://localhost/test_db"
-
-
-@pytest.fixture(autouse=True)
-def reset_database(database_url):
-    """Auto-use fixture that runs before each test."""
-    # Setup: Clear database
-    print(f"Clearing database: {database_url}")
-    yield
-    # Teardown: Clean up
-    print("Test completed")
-
-
-@pytest.fixture
-def sample_user():
-    """Provide sample user data."""
-    return {
-        "id": 1,
-        "name": "Test User",
-        "email": "test@example.com"
-    }
-
-
-@pytest.fixture
-def sample_users():
-    """Provide list of sample users."""
-    return [
-        {"id": 1, "name": "User 1"},
-        {"id": 2, "name": "User 2"},
-        {"id": 3, "name": "User 3"},
-    ]
-
-
-# Parametrized fixture
-@pytest.fixture(params=["sqlite", "postgresql", "mysql"])
-def db_backend(request):
-    """Fixture that runs tests with different database backends."""
-    return request.param
-
-
-def test_with_db_backend(db_backend):
-    """This test will run 3 times with different backends."""
-    print(f"Testing with {db_backend}")
-    assert db_backend in ["sqlite", "postgresql", "mysql"]
-```
-
-### Pattern 10: Property-Based Testing
-
-```python
-# test_properties.py
-from hypothesis import given, strategies as st
-import pytest
-
-def reverse_string(s: str) -> str:
-    """Reverse a string."""
-    return s[::-1]
-
-
-@given(st.text())
-def test_reverse_twice_is_original(s):
-    """Property: reversing twice returns original."""
-    assert reverse_string(reverse_string(s)) == s
-
-
-@given(st.text())
-def test_reverse_length(s):
-    """Property: reversed string has same length."""
-    assert len(reverse_string(s)) == len(s)
-
-
-@given(st.integers(), st.integers())
-def test_addition_commutative(a, b):
-    """Property: addition is commutative."""
-    assert a + b == b + a
-
-
-@given(st.lists(st.integers()))
-def test_sorted_list_properties(lst):
-    """Property: sorted list is ordered."""
-    sorted_lst = sorted(lst)
-
-    # Same length
-    assert len(sorted_lst) == len(lst)
-
-    # All elements present
-    assert set(sorted_lst) == set(lst)
-
-    # Is ordered
-    for i in range(len(sorted_lst) - 1):
-        assert sorted_lst[i] <= sorted_lst[i + 1]
+def test_create_user_rejects_invalid_email():
+    with pytest.raises(ValueError, match="Invalid email format"):
+        service.create_user({"email": "not-an-email"})
 ```
 
 ## Testing Best Practices
@@ -632,36 +432,129 @@ def test_sorted_list_properties(lst):
 #     test_workflows.py
 ```
 
-### Test Naming
+### Test Naming Convention
+
+A common pattern: `test_<unit>_<scenario>_<expected_outcome>`. Adapt to your team's preferences.
 
 ```python
-# Good test names
+# Pattern: test_<unit>_<scenario>_<expected>
+def test_create_user_with_valid_data_returns_user():
+    ...
+
+def test_create_user_with_duplicate_email_raises_conflict():
+    ...
+
+def test_get_user_with_unknown_id_returns_none():
+    ...
+
+# Good test names - clear and descriptive
 def test_user_creation_with_valid_data():
     """Clear name describes what is being tested."""
     pass
-
 
 def test_login_fails_with_invalid_password():
     """Name describes expected behavior."""
     pass
 
-
 def test_api_returns_404_for_missing_resource():
     """Specific about inputs and expected outcomes."""
     pass
 
-
-# Bad test names
+# Bad test names - avoid these
 def test_1():  # Not descriptive
     pass
-
 
 def test_user():  # Too vague
     pass
 
-
 def test_function():  # Doesn't explain what's tested
     pass
+```
+
+### Testing Retry Behavior
+
+Verify that retry logic works correctly using mock side effects.
+
+```python
+from unittest.mock import Mock
+
+def test_retries_on_transient_error():
+    """Test that service retries on transient failures."""
+    client = Mock()
+    # Fail twice, then succeed
+    client.request.side_effect = [
+        ConnectionError("Failed"),
+        ConnectionError("Failed"),
+        {"status": "ok"},
+    ]
+
+    service = ServiceWithRetry(client, max_retries=3)
+    result = service.fetch()
+
+    assert result == {"status": "ok"}
+    assert client.request.call_count == 3
+
+def test_gives_up_after_max_retries():
+    """Test that service stops retrying after max attempts."""
+    client = Mock()
+    client.request.side_effect = ConnectionError("Failed")
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ConnectionError):
+        service.fetch()
+
+    assert client.request.call_count == 3
+
+def test_does_not_retry_on_permanent_error():
+    """Test that permanent errors are not retried."""
+    client = Mock()
+    client.request.side_effect = ValueError("Invalid input")
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ValueError):
+        service.fetch()
+
+    # Only called once - no retry for ValueError
+    assert client.request.call_count == 1
+```
+
+### Mocking Time with Freezegun
+
+Use freezegun to control time in tests for predictable time-dependent behavior.
+
+```python
+from freezegun import freeze_time
+from datetime import datetime, timedelta
+
+@freeze_time("2026-01-15 10:00:00")
+def test_token_expiry():
+    """Test token expires at correct time."""
+    token = create_token(expires_in_seconds=3600)
+    assert token.expires_at == datetime(2026, 1, 15, 11, 0, 0)
+
+@freeze_time("2026-01-15 10:00:00")
+def test_is_expired_returns_false_before_expiry():
+    """Test token is not expired when within validity period."""
+    token = create_token(expires_in_seconds=3600)
+    assert not token.is_expired()
+
+@freeze_time("2026-01-15 12:00:00")
+def test_is_expired_returns_true_after_expiry():
+    """Test token is expired after validity period."""
+    token = Token(expires_at=datetime(2026, 1, 15, 11, 30, 0))
+    assert token.is_expired()
+
+def test_with_time_travel():
+    """Test behavior across time using freeze_time context."""
+    with freeze_time("2026-01-01") as frozen_time:
+        item = create_item()
+        assert item.created_at == datetime(2026, 1, 1)
+
+        # Move forward in time
+        frozen_time.move_to("2026-01-15")
+        assert item.age_days == 14
 ```
 
 ### Test Markers
@@ -726,182 +619,4 @@ pytest --cov=myapp --cov-fail-under=80 tests/
 pytest --cov=myapp --cov-report=term-missing tests/
 ```
 
-## Testing Database Code
-
-```python
-# test_database_models.py
-import pytest
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-
-Base = declarative_base()
-
-
-class User(Base):
-    """User model."""
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    email = Column(String(100), unique=True)
-
-
-@pytest.fixture(scope="function")
-def db_session() -> Session:
-    """Create in-memory database for testing."""
-    engine = create_engine("sqlite:///:memory:")
-    Base.metadata.create_all(engine)
-
-    SessionLocal = sessionmaker(bind=engine)
-    session = SessionLocal()
-
-    yield session
-
-    session.close()
-
-
-def test_create_user(db_session):
-    """Test creating a user."""
-    user = User(name="Test User", email="test@example.com")
-    db_session.add(user)
-    db_session.commit()
-
-    assert user.id is not None
-    assert user.name == "Test User"
-
-
-def test_query_user(db_session):
-    """Test querying users."""
-    user1 = User(name="User 1", email="user1@example.com")
-    user2 = User(name="User 2", email="user2@example.com")
-
-    db_session.add_all([user1, user2])
-    db_session.commit()
-
-    users = db_session.query(User).all()
-    assert len(users) == 2
-
-
-def test_unique_email_constraint(db_session):
-    """Test unique email constraint."""
-    from sqlalchemy.exc import IntegrityError
-
-    user1 = User(name="User 1", email="same@example.com")
-    user2 = User(name="User 2", email="same@example.com")
-
-    db_session.add(user1)
-    db_session.commit()
-
-    db_session.add(user2)
-
-    with pytest.raises(IntegrityError):
-        db_session.commit()
-```
-
-## CI/CD Integration
-
-```yaml
-# .github/workflows/test.yml
-name: Tests
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-          pip install pytest pytest-cov
-
-      - name: Run tests
-        run: |
-          pytest --cov=myapp --cov-report=xml
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-```
-
-## Configuration Files
-
-```ini
-# pytest.ini
-[pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
-addopts =
-    -v
-    --strict-markers
-    --tb=short
-    --cov=myapp
-    --cov-report=term-missing
-markers =
-    slow: marks tests as slow
-    integration: marks integration tests
-    unit: marks unit tests
-    e2e: marks end-to-end tests
-```
-
-```toml
-# pyproject.toml
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-addopts = [
-    "-v",
-    "--cov=myapp",
-    "--cov-report=term-missing",
-]
-
-[tool.coverage.run]
-source = ["myapp"]
-omit = ["*/tests/*", "*/migrations/*"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-]
-```
-
-## Resources
-
-- **pytest documentation**: https://docs.pytest.org/
-- **unittest.mock**: https://docs.python.org/3/library/unittest.mock.html
-- **hypothesis**: Property-based testing
-- **pytest-asyncio**: Testing async code
-- **pytest-cov**: Coverage reporting
-- **pytest-mock**: pytest wrapper for mock
-
-## Best Practices Summary
-
-1. **Write tests first** (TDD) or alongside code
-2. **One assertion per test** when possible
-3. **Use descriptive test names** that explain behavior
-4. **Keep tests independent** and isolated
-5. **Use fixtures** for setup and teardown
-6. **Mock external dependencies** appropriately
-7. **Parametrize tests** to reduce duplication
-8. **Test edge cases** and error conditions
-9. **Measure coverage** but focus on quality
-10. **Run tests in CI/CD** on every commit
+For advanced patterns (async testing, monkeypatching, property-based testing, database testing, CI/CD integration, and configuration), see [references/advanced-patterns.md](references/advanced-patterns.md)

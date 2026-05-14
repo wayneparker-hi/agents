@@ -8,7 +8,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 - Each plugin does **one thing well** (Unix philosophy)
 - Clear, focused purposes (describable in 5-10 words)
-- Average plugin size: **3.4 components** (follows Anthropic's 2-8 pattern)
+- Average plugin size: **5.5 components** (follows Anthropic's 2-8 pattern)
 - **Zero bloated plugins** - all plugins focused and purposeful
 
 ### Composability Over Bundling
@@ -36,8 +36,8 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **65 focused plugins** optimized for specific use cases
-- **23 clear categories** with 1-6 plugins each for easy discovery
+- **81 focused plugins** (80 local + 1 external via git-subdir) optimized for specific use cases
+- **25 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
   - **Security**: 4 plugins (scanning, compliance, backend-api, frontend-mobile)
@@ -48,17 +48,20 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**91 Specialized Agents**
+**185 Specialized Agents**
+
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
-- Model-optimized (48 Haiku, 100 Sonnet) for performance and cost
+- Model-optimized with three-tier strategy (Opus, Sonnet, Haiku) for performance and cost
 
 **15 Workflow Orchestrators**
+
 - Multi-agent coordination systems
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
-**44 Development Tools**
+**71 Development Tools**
+
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
   - Security scanning (SAST, dependency audit, XSS)
@@ -66,10 +69,11 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**47 Agent Skills**
+**107 Agent Skills**
+
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 14 plugins
+- Domain-specific expertise across 18 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -77,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (65 plugins)
+│   └── marketplace.json          # Marketplace catalog (77 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -120,7 +124,7 @@ claude-agents/
 │   │   │   └── c4-context.md
 │   │   └── commands/
 │   │       └── c4-architecture.md
-│   └── ... (60 more isolated plugins)
+│   └── ... (62 more isolated plugins)
 ├── docs/                          # Documentation
 │   ├── agent-skills.md           # Agent Skills guide
 │   ├── agents.md                 # Agent reference
@@ -176,10 +180,9 @@ All skills follow the [Agent Skills Specification](https://github.com/anthropics
 
 ```yaml
 ---
-name: skill-name                  # Required: hyphen-case
+name: skill-name # Required: hyphen-case
 description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 ---
-
 # Skill content with progressive disclosure
 ```
 
@@ -191,22 +194,25 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 47 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 153 skills.
 
 ## Model Configuration Strategy
 
-### Two-Tier Architecture
+### Four-Tier Architecture
 
-The system uses Claude Opus and Sonnet models strategically:
+The system uses Claude Opus, Sonnet, Haiku, and Inherit assignments strategically:
 
-| Model | Count | Use Case |
-|-------|-------|----------|
-| Haiku | 48 agents | Fast execution, deterministic tasks |
-| Sonnet | 100 agents | Complex reasoning, architecture decisions |
+| Model   | Count     | Use Case                                     |
+| ------- | --------- | -------------------------------------------- |
+| Opus    | 54 agents | Critical architecture, security, code review |
+| Sonnet  | 62 agents | Complex tasks, support with intelligence     |
+| Haiku   | 20 agents | Fast operational tasks                       |
+| Inherit | 49 agents | Defers model choice to the user at runtime   |
 
 ### Selection Criteria
 
 **Haiku - Fast Execution & Deterministic Tasks**
+
 - Generating code from well-defined specifications
 - Creating tests following established patterns
 - Writing documentation with clear templates
@@ -217,6 +223,7 @@ The system uses Claude Opus and Sonnet models strategically:
 - Managing deployment pipelines
 
 **Sonnet - Complex Reasoning & Architecture**
+
 - Designing system architecture
 - Making technology selection decisions
 - Performing security audits
@@ -255,8 +262,8 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 91 agents accessible across plugins
-- **Efficient distribution** - 3.4 components per plugin average
+- **100% component availability** - all 185 agents accessible across plugins
+- **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
 
@@ -279,6 +286,7 @@ python-development/
 ```
 
 **Benefits:**
+
 - Clear responsibility
 - Easy to maintain
 - Minimal token usage
@@ -295,6 +303,7 @@ full-stack-orchestration/
 ```
 
 **Orchestration:**
+
 1. backend-architect (design API)
 2. database-architect (design schema)
 3. frontend-developer (build UI)
@@ -326,7 +335,7 @@ Feature Development Workflow:
 1. backend-development:feature-development
 2. security-scanning:security-hardening
 3. unit-testing:test-generate
-4. code-review-ai:ai-review
+4. comprehensive-review:full-review
 5. cicd-automation:workflow-automate
 6. observability-monitoring:monitor-setup
 ```
@@ -383,5 +392,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 65 plugins
+- [Plugin Reference](./plugins.md) - All 77 plugins
 - [Usage Guide](./usage.md) - Commands and workflows

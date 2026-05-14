@@ -22,16 +22,19 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 1. Service Decomposition Strategies
 
 **By Business Capability**
+
 - Organize services around business functions
 - Each service owns its domain
 - Example: OrderService, PaymentService, InventoryService
 
 **By Subdomain (DDD)**
+
 - Core domain, supporting subdomains
 - Bounded contexts map to services
 - Clear ownership and responsibility
 
 **Strangler Fig Pattern**
+
 - Gradually extract from monolith
 - New functionality as microservices
 - Proxy routes to old/new systems
@@ -39,11 +42,13 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 2. Communication Patterns
 
 **Synchronous (Request/Response)**
+
 - REST APIs
 - gRPC
 - GraphQL
 
 **Asynchronous (Events/Messages)**
+
 - Event streaming (Kafka)
 - Message queues (RabbitMQ, SQS)
 - Pub/Sub patterns
@@ -51,11 +56,13 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 3. Data Management
 
 **Database Per Service**
+
 - Each service owns its data
 - No shared databases
 - Loose coupling
 
 **Saga Pattern**
+
 - Distributed transactions
 - Compensating actions
 - Eventual consistency
@@ -63,14 +70,17 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 4. Resilience Patterns
 
 **Circuit Breaker**
+
 - Fail fast on repeated errors
 - Prevent cascade failures
 
 **Retry with Backoff**
+
 - Transient fault handling
 - Exponential backoff
 
 **Bulkhead**
+
 - Isolate resources
 - Limit impact of failures
 
@@ -552,34 +562,3 @@ async def call_payment_service(payment_data: dict):
         payment_data
     )
 ```
-
-## Resources
-
-- **references/service-decomposition-guide.md**: Breaking down monoliths
-- **references/communication-patterns.md**: Sync vs async patterns
-- **references/saga-implementation.md**: Distributed transactions
-- **assets/circuit-breaker.py**: Production circuit breaker
-- **assets/event-bus-template.py**: Kafka event bus implementation
-- **assets/api-gateway-template.py**: Complete API gateway
-
-## Best Practices
-
-1. **Service Boundaries**: Align with business capabilities
-2. **Database Per Service**: No shared databases
-3. **API Contracts**: Versioned, backward compatible
-4. **Async When Possible**: Events over direct calls
-5. **Circuit Breakers**: Fail fast on service failures
-6. **Distributed Tracing**: Track requests across services
-7. **Service Registry**: Dynamic service discovery
-8. **Health Checks**: Liveness and readiness probes
-
-## Common Pitfalls
-
-- **Distributed Monolith**: Tightly coupled services
-- **Chatty Services**: Too many inter-service calls
-- **Shared Databases**: Tight coupling through data
-- **No Circuit Breakers**: Cascade failures
-- **Synchronous Everything**: Tight coupling, poor resilience
-- **Premature Microservices**: Starting with microservices
-- **Ignoring Network Failures**: Assuming reliable network
-- **No Compensation Logic**: Can't undo failed transactions

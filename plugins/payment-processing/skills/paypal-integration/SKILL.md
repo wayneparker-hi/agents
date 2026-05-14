@@ -20,32 +20,40 @@ Master PayPal payment integration including Express Checkout, IPN handling, recu
 ## Core Concepts
 
 ### 1. Payment Products
+
 **PayPal Checkout**
+
 - One-time payments
 - Express checkout experience
 - Guest and PayPal account payments
 
 **PayPal Subscriptions**
+
 - Recurring billing
 - Subscription plans
 - Automatic renewals
 
 **PayPal Payouts**
+
 - Send money to multiple recipients
 - Marketplace and platform payments
 
 ### 2. Integration Methods
+
 **Client-Side (JavaScript SDK)**
+
 - Smart Payment Buttons
 - Hosted payment flow
 - Minimal backend code
 
 **Server-Side (REST API)**
+
 - Full control over payment flow
 - Custom checkout UI
 - Advanced features
 
 ### 3. IPN (Instant Payment Notification)
+
 - Webhook-like payment notifications
 - Asynchronous payment updates
 - Verification required
@@ -118,6 +126,7 @@ def capture_paypal_order(order_id):
 ## Express Checkout Implementation
 
 ### Server-Side Order Creation
+
 ```python
 import requests
 import json
@@ -189,6 +198,7 @@ class PayPalClient:
 ## IPN (Instant Payment Notification) Handling
 
 ### IPN Verification and Processing
+
 ```python
 from flask import Flask, request
 import requests
@@ -268,6 +278,7 @@ def handle_chargeback(ipn_data):
 ## Subscription/Recurring Billing
 
 ### Create Subscription Plan
+
 ```python
 def create_subscription_plan(name, amount, interval='MONTH'):
     """Create a subscription plan."""
@@ -437,31 +448,3 @@ def test_payment_flow():
     # captured = client.capture_order(order['id'])
     # assert captured['status'] == 'COMPLETED'
 ```
-
-## Resources
-
-- **references/express-checkout.md**: Express Checkout implementation guide
-- **references/ipn-handling.md**: IPN verification and processing
-- **references/refund-workflows.md**: Refund handling patterns
-- **references/billing-agreements.md**: Recurring billing setup
-- **assets/paypal-client.py**: Production PayPal client
-- **assets/ipn-processor.py**: IPN webhook processor
-- **assets/recurring-billing.py**: Subscription management
-
-## Best Practices
-
-1. **Always Verify IPN**: Never trust IPN without verification
-2. **Idempotent Processing**: Handle duplicate IPN notifications
-3. **Error Handling**: Implement robust error handling
-4. **Logging**: Log all transactions and errors
-5. **Test Thoroughly**: Use sandbox extensively
-6. **Webhook Backup**: Don't rely solely on client-side callbacks
-7. **Currency Handling**: Always specify currency explicitly
-
-## Common Pitfalls
-
-- **Not Verifying IPN**: Accepting IPN without verification
-- **Duplicate Processing**: Not checking for duplicate transactions
-- **Wrong Environment**: Mixing sandbox and production URLs/credentials
-- **Missing Webhooks**: Not handling all payment states
-- **Hardcoded Values**: Not making configurable for different environments

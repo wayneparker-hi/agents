@@ -20,7 +20,9 @@ Master automated billing systems including recurring billing, invoice generation
 ## Core Concepts
 
 ### 1. Billing Cycles
+
 **Common Intervals:**
+
 - Monthly (most common for SaaS)
 - Annual (discounted long-term)
 - Quarterly
@@ -28,20 +30,25 @@ Master automated billing systems including recurring billing, invoice generation
 - Custom (usage-based, per-seat)
 
 ### 2. Subscription States
+
 ```
 trial → active → past_due → canceled
               → paused → resumed
 ```
 
 ### 3. Dunning Management
+
 Automated process to recover failed payments through:
+
 - Retry schedules
 - Customer notifications
 - Grace periods
 - Account restrictions
 
 ### 4. Proration
+
 Adjusting charges when:
+
 - Upgrading/downgrading mid-cycle
 - Adding/removing seats
 - Changing billing frequency
@@ -528,32 +535,3 @@ class UsageBillingEngine:
 
         return charge
 ```
-
-## Resources
-
-- **references/billing-cycles.md**: Billing cycle management
-- **references/dunning-management.md**: Failed payment recovery
-- **references/proration.md**: Prorated charge calculations
-- **references/tax-calculation.md**: Tax/VAT/GST handling
-- **references/invoice-lifecycle.md**: Invoice state management
-- **assets/billing-state-machine.yaml**: Billing workflow
-- **assets/invoice-template.html**: Invoice templates
-- **assets/dunning-policy.yaml**: Dunning configuration
-
-## Best Practices
-
-1. **Automate Everything**: Minimize manual intervention
-2. **Clear Communication**: Notify customers of billing events
-3. **Flexible Retry Logic**: Balance recovery with customer experience
-4. **Accurate Proration**: Fair calculation for plan changes
-5. **Tax Compliance**: Calculate correct tax for jurisdiction
-6. **Audit Trail**: Log all billing events
-7. **Graceful Degradation**: Handle edge cases without breaking
-
-## Common Pitfalls
-
-- **Incorrect Proration**: Not accounting for partial periods
-- **Missing Tax**: Forgetting to add tax to invoices
-- **Aggressive Dunning**: Canceling too quickly
-- **No Notifications**: Not informing customers of failures
-- **Hardcoded Cycles**: Not supporting custom billing dates

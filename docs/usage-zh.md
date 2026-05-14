@@ -1,17 +1,17 @@
 # Usage Guide
 
-使用agents、斜杠命令和多代理工作流的完整指南。
+使用 agents、斜杠命令和多代理工作流的完整指南。
 
 ## 概述
 
 插件生态系统提供两个主要接口：
 
 1. **斜杠命令** - 直接调用工具和工作流
-2. **自然语言** - Claude推理使用哪个agents
+2. **自然语言** - Claude 推理使用哪个 agents
 
 ## 斜杠命令
 
-斜杠命令是使用agents和工作流的主要接口。每个插件提供命名空间命令，您可以直接运行。
+斜杠命令是使用 agents 和工作流的主要接口。每个插件提供命名空间命令，您可以直接运行。
 
 ### 命令格式
 
@@ -32,19 +32,19 @@
 - **直接调用** - 无需用自然语言描述您想要什么
 - **结构化参数** - 显式传递参数以实现精确控制
 - **可组合性** - 链接命令以实现复杂工作流
-- **可发现性** - 使用`/plugin`查看所有可用命令
+- **可发现性** - 使用 `/plugin` 查看所有可用命令
 
 ## 自然语言
 
-Agents也可以通过自然语言调用，当您需要Claude推理使用哪个专家时：
+Agents 也可以通过自然语言调用，当您需要 Claude 推理使用哪个专家时：
 
 ```
-"使用backend-architect设计认证API"
-"让security-auditor扫描OWASP漏洞"
-"让performance-engineer优化这个数据库查询"
+"使用 backend-architect 设计认证 API"
+"让 security-auditor 扫描 OWASP 漏洞"
+"让 performance-engineer 优化这个数据库查询"
 ```
 
-Claude Code根据您的请求自动选择和协调适当的agents。
+Claude Code 根据您的请求自动选择和协调适当的 agents。
 
 ## 按类别分类的命令参考
 
@@ -61,7 +61,7 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 | 命令 | 描述 |
 |---------|-------------|
 | `/unit-testing:test-generate` | 生成全面的单元测试 |
-| `/tdd-workflows:tdd-cycle` | 完整的TDD红绿重构周期 |
+| `/tdd-workflows:tdd-cycle` | 完整的 TDD 红绿重构周期 |
 | `/tdd-workflows:tdd-red` | 首先编写失败测试 |
 | `/tdd-workflows:tdd-green` | 实现代码以通过测试 |
 | `/tdd-workflows:tdd-refactor` | 重构通过的测试 |
@@ -70,7 +70,6 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/code-review-ai:ai-review` | AI驱动的代码审查 |
 | `/comprehensive-review:full-review` | 多视角分析 |
 | `/comprehensive-review:pr-enhance` | 增强拉取请求 |
 
@@ -93,24 +92,24 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 | `/security-scanning:security-hardening` | 全面的安全加固 |
 | `/security-scanning:security-sast` | 静态应用程序安全测试 |
 | `/security-scanning:security-dependencies` | 依赖漏洞扫描 |
-| `/security-compliance:compliance-check` | SOC2/HIPAA/GDPR合规 |
-| `/frontend-mobile-security:xss-scan` | XSS漏洞扫描 |
+| `/security-compliance:compliance-check` | SOC2/HIPAA/GDPR 合规 |
+| `/frontend-mobile-security:xss-scan` | XSS 漏洞扫描 |
 
 ### 基础设施与部署
 
 | 命令 | 描述 |
 |---------|-------------|
 | `/observability-monitoring:monitor-setup` | 设置监控基础设施 |
-| `/observability-monitoring:slo-implement` | 实现SLO/SLI指标 |
+| `/observability-monitoring:slo-implement` | 实现 SLO/SLI 指标 |
 | `/deployment-validation:config-validate` | 部署前验证 |
-| `/cicd-automation:workflow-automate` | CI/CD管道自动化 |
+| `/cicd-automation:workflow-automate` | CI/CD 管道自动化 |
 
-### 数据与ML
+### 数据与 ML
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/machine-learning-ops:ml-pipeline` | ML训练管道编排 |
-| `/data-engineering:data-pipeline` | ETL/ELT管道构建 |
+| `/machine-learning-ops:ml-pipeline` | ML 训练管道编排 |
+| `/data-engineering:data-pipeline` | ETL/ELT 管道构建 |
 | `/data-engineering:data-driven-feature` | 数据驱动功能开发 |
 
 ### 文档
@@ -119,7 +118,8 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 |---------|-------------|
 | `/code-documentation:doc-generate` | 生成全面的文档 |
 | `/code-documentation:code-explain` | 解释代码功能 |
-| `/documentation-generation:doc-generate` | OpenAPI规范、图表、教程 |
+| `/documentation-generation:doc-generate` | OpenAPI 规范、图表、教程 |
+| `/c4-architecture:c4-architecture` | 生成综合 C4 架构文档（上下文、容器、组件、代码） |
 
 ### 重构与维护
 
@@ -137,35 +137,35 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/database-migrations:sql-migrations` | SQL迁移自动化 |
+| `/database-migrations:sql-migrations` | SQL 迁移自动化 |
 | `/database-migrations:migration-observability` | 迁移监控 |
 | `/database-cloud-optimization:cost-optimize` | 数据库和云优化 |
 
-### Git与PR工作流
+### Git 与 PR 工作流
 
 | 命令 | 描述 |
 |---------|-------------|
 | `/git-pr-workflows:pr-enhance` | 增强拉取请求质量 |
 | `/git-pr-workflows:onboard` | 团队入职自动化 |
-| `/git-pr-workflows:git-workflow` | Git工作流自动化 |
+| `/git-pr-workflows:git-workflow` | Git 工作流自动化 |
 
 ### 项目脚手架
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/python-development:python-scaffold` | FastAPI/Django项目设置 |
-| `/javascript-typescript:typescript-scaffold` | Next.js/React + Vite设置 |
-| `/systems-programming:rust-project` | Rust项目脚手架 |
+| `/python-development:python-scaffold` | FastAPI/Django 项目设置 |
+| `/javascript-typescript:typescript-scaffold` | Next.js/React + Vite 设置 |
+| `/systems-programming:rust-project` | Rust 项目脚手架 |
 
-### AI与LLM开发
+### AI 与 LLM 开发
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/llm-application-dev:langchain-agent` | LangChain agent开发 |
-| `/llm-application-dev:ai-assistant` | AI助手实现 |
+| `/llm-application-dev:langchain-agent` | LangChain agent 开发 |
+| `/llm-application-dev:ai-assistant` | AI 助手实现 |
 | `/llm-application-dev:prompt-optimize` | 提示工程优化 |
 | `/agent-orchestration:multi-agent-optimize` | 多代理优化 |
-| `/agent-orchestration:improve-agent` | Agent改进工作流 |
+| `/agent-orchestration:improve-agent` | Agent 改进工作流 |
 
 ### 测试与性能
 
@@ -185,13 +185,13 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/accessibility-compliance:accessibility-audit` | WCAG合规审计 |
+| `/accessibility-compliance:accessibility-audit` | WCAG 合规审计 |
 
-### API开发
+### API 开发
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/api-testing-observability:api-mock` | API模拟和测试 |
+| `/api-testing-observability:api-mock` | API 模拟和测试 |
 
 ### 上下文管理
 
@@ -219,11 +219,11 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 **发生什么：**
 
 1. 数据库模式设计与迁移
-2. 后端API实现（REST/GraphQL）
+2. 后端 API 实现（REST/GraphQL）
 3. 前端组件与状态管理
 4. 全面测试套件（单元/集成/端到端）
 5. 安全审计和加固
-6. CI/CD管道设置与功能标志
+6. CI/CD 管道设置与功能标志
 7. 可观测性和监控配置
 
 ### 安全加固
@@ -233,15 +233,15 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 /security-scanning:security-hardening --level comprehensive
 
 # 自然语言替代
-"执行安全审计并实施OWASP最佳实践"
+"执行安全审计并实施 OWASP 最佳实践"
 ```
 
 **编排：** security-auditor → backend-security-coder → frontend-security-coder → mobile-security-coder → test-automator
 
-### 数据/ML管道
+### 数据/ML 管道
 
 ```bash
-# ML功能开发与生产部署
+# ML 功能开发与生产部署
 /machine-learning-ops:ml-pipeline "客户流失预测模型"
 
 # 自然语言替代
@@ -262,7 +262,28 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 
 **编排：** incident-responder → devops-troubleshooter → debugger → error-detective → observability-engineer
 
-### 命令参数和选项
+### C4 架构文档
+
+```bash
+# 生成综合 C4 架构文档
+/c4-architecture:c4-architecture
+
+# 自然语言替代
+"为这个代码库创建 C4 架构文档"
+```
+
+**编排：** c4-code → c4-component → c4-container → c4-context
+
+**发生什么：**
+
+1. **代码级别**：对所有子目录进行自底向上分析，创建包含函数签名和依赖关系的代码级文档
+2. **组件级别**：将代码文档综合为具有接口和关系的逻辑组件
+3. **容器级别**：将组件映射到部署容器，包含 OpenAPI/Swagger API 规范
+4. **上下文级别**：创建包含角色、用户旅程和外部依赖的高级系统上下文
+
+**输出：** 在 `C4-Documentation/` 目录中生成完整的 C4 文档，包含所有级别的 Mermaid 图（上下文、容器、组件、代码）
+
+## 命令参数和选项
 
 许多斜杠命令支持参数以实现精确控制：
 
@@ -271,15 +292,15 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 /unit-testing:test-generate src/api/users.py
 
 # 功能开发与方法论规范
-/backend-development:feature-development OAuth2集成与社交登录
+/backend-development:feature-development OAuth2 集成与社交登录
 
 # 安全依赖扫描
 /security-scanning:security-dependencies
 
 # 组件脚手架
-/frontend-mobile-development:component-scaffold UserProfile组件与hooks
+/frontend-mobile-development:component-scaffold UserProfile 组件与 hooks
 
-# TDD工作流周期
+# TDD 工作流周期
 /tdd-workflows:tdd-red 用户可以重置密码
 /tdd-workflows:tdd-green
 /tdd-workflows:tdd-refactor
@@ -287,8 +308,11 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 # 智能调试
 /debugging-toolkit:smart-debug 结账流程中的内存泄漏
 
-# Python项目脚手架
+# Python 项目脚手架
 /python-development:python-scaffold fastapi-microservice
+
+# C4 架构文档生成
+/c4-architecture:c4-architecture
 ```
 
 ## 结合自然语言和命令
@@ -300,7 +324,7 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 /full-stack-orchestration:full-stack-feature "支付处理"
 
 # 然后提供自然语言指导
-"确保PCI-DSS合规并集成Stripe"
+"确保 PCI-DSS 合规并集成 Stripe"
 "添加失败事务的重试逻辑"
 "设置欺诈检测规则"
 ```
@@ -317,7 +341,7 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 ### 何时使用自然语言
 
 - **探索性工作** - 不确定使用哪个工具时
-- **复杂推理** - Claude需要协调多个agents时
+- **复杂推理** - Claude 需要协调多个 agents 时
 - **情境决策** - 正确方法取决于情况时
 - **临时任务** - 不符合命令的一次性操作
 
@@ -327,7 +351,7 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 
 ```bash
 # 1. 从功能开发开始
-/backend-development:feature-development 支付处理API
+/backend-development:feature-development 支付处理 API
 
 # 2. 添加安全加固
 /security-scanning:security-hardening
@@ -336,36 +360,36 @@ Claude Code根据您的请求自动选择和协调适当的agents。
 /unit-testing:test-generate
 
 # 4. 审查实现
-/code-review-ai:ai-review
+/comprehensive-review:full-review
 
-# 5. 设置CI/CD
+# 5. 设置 CI/CD
 /cicd-automation:workflow-automate
 
 # 6. 添加监控
 /observability-monitoring:monitor-setup
 ```
 
-## Agent Skills集成
+## Agent Skills 集成
 
-Agent Skills与命令协同工作，提供深度专业知识：
+Agent Skills 与命令协同工作，提供深度专业知识：
 
 ```
-用户："设置带异步模式的FastAPI项目"
+用户："设置带异步模式的 FastAPI 项目"
 → 激活：fastapi-templates skill
 → 调用：/python-development:python-scaffold
-→ 结果：生产就绪的FastAPI项目，采用最佳实践
+→ 结果：生产就绪的 FastAPI 项目，采用最佳实践
 
-用户："实现带Helm的Kubernetes部署"
+用户："实现带 Helm 的 Kubernetes 部署"
 → 激活：helm-chart-scaffolding、k8s-manifest-generator skills
 → 指导：kubernetes-architect agent
-→ 结果：生产级K8s清单与Helm图表
+→ 结果：生产级 K8s 清单与 Helm 图表
 ```
 
-详情请参见[Agent Skills](./agent-skills.md)了解47个专业skills。
+详情请参见 [Agent Skills](./agent-skills.md) 了解 153 个专业 skills。
 
 ## 参见
 
 - [Agent Skills](./agent-skills.md) - 专业化的知识包
-- [Agent Reference](./agents.md) - 完整agent目录
-- [Plugin Reference](./plugins.md) - 所有63个插件
+- [Agent Reference](./agents.md) - 完整 agent 目录
+- [Plugin Reference](./plugins.md) - 所有 80 个插件
 - [Architecture](./architecture.md) - 设计原则
